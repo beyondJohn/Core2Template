@@ -1,0 +1,64 @@
+﻿
+@model TestModel
+
+@{
+    ViewData["Title"] = "PostTest";
+}
+
+<h2>PostTest</h2>
+
+
+<div style="padding:15px;">
+    <form asp-action="PostTest" asp-controller="CME" id="myForm" name="myForm" method="post">
+        @{
+
+            int CaseID = 0;
+            if (ViewContext.RouteData.Values["id"] != null)
+            {
+                CaseID = int.Parse(ViewContext.RouteData.Values["id"].ToString());
+            }
+            for (int i = 0; i < Model.getPostTestQuestions(CaseID.ToString()).Count(); i++)
+            {
+                string questionText = Model.getPostTestQuestions(CaseID.ToString()).Select(m => m.question_text).Skip(i).FirstOrDefault().ToString();
+                int questionID = int.Parse(Model.getPostTestQuestions(CaseID.ToString()).Select(m => m.Question_Id).Skip(i).FirstOrDefault().ToString());
+                @Html.Raw(questionText);
+                <br /><br />
+                foreach (var answer in Model.getAnswers(questionID))
+                {
+                    @Html.RadioButtonFor(m => m.SelectedPostTestAnswer[i], answer.Answer_Id)
+                    @answer.Answer_Text
+                    <br />
+                }
+
+                <br />
+            }
+            <br />
+        }
+        <script type="text/javascript">
+            function checkRadios() {
+                var names = {};
+                $('input:radio').each(function () { // find unique names
+                    names[$(this).attr('name')] = true;
+                });
+                var count = 0;
+                $.each(names, function () { // then count them
+                    count++;
+                });
+                if ($('input:radio:checked').length == count) {
+                    // all questions answered
+                    //alert($('input:radio:checked').contents) //uncomment to view underlying javascript
+                    $("#myForm").submit();
+                }
+                else {
+                    alert("Please answer all questions before proceeding. Thank you!");
+                }
+            }
+
+
+/**/</script>
+        <br />
+        <div onclick="checkRadios()" style="cursor:pointer;">
+            <img src="~/Images/proceed.jpg" style="width:200px;" />
+        </div>
+    </form>
+</div>

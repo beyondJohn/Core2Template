@@ -1,0 +1,29 @@
+﻿
+@model TestModel
+
+@{
+    ViewData["Title"] = "ClaimCredit";
+}
+
+<h2>ClaimCredit</h2>
+
+<form asp-action="ClaimCredit" asp-controller="CME" id="myForm" name="myForm" method="post">
+    <br />
+
+    @Html.Raw("<br />Please only claim credit commensurate to the time you devoted to the activity.<br /><br />")
+    @{
+        int caseID = int.Parse(ViewContext.RouteData.Values["id"].ToString());
+        int userID = int.Parse(Model.UserId);
+
+    }
+    @Html.Raw("The maximum credit avaiable for this activity is <b>")
+    @Model.getMaxCredit(caseID).ToString()
+    @Html.Raw("</b> credit hours.<br /><br />Claim Credit:")
+    @Html.TextBoxFor(x => x.claimedCredit)
+    @Html.Raw("<br /><br />Select credit type: ")
+    @Html.DropDownListFor(d => d.claimedCreditType, Model.DDLList)
+    @Html.Raw("<br /><br /><br />")
+    <div onClick="document.forms['myForm'].submit();" style="cursor:pointer;">
+        <img src="~/Images/proceed.jpg" style="width:200px;" />
+    </div><br /><br />
+</form>

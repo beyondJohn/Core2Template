@@ -1,0 +1,79 @@
+﻿@using WebApplication5.Models;
+
+@model TestModel
+
+@{
+    ViewData["Title"] = "Activity";
+}
+
+<h2>Activity</h2>
+
+<form asp-action="Activity" asp-controller="CME" id="myForm" name="myForm" method="post">
+    <div style="padding:15px;">
+
+        @{
+            string CaseID = "783";
+            int questionNumber = 0;
+            ///CME/Activity/773?q=0
+        }
+
+        @if (ViewContext.RouteData.Values["q"] != null)
+        {
+            questionNumber = int.Parse(ViewContext.RouteData.Values["q"].ToString());
+        }
+        @if (ViewContext.RouteData.Values["id"] != null)
+        {
+            CaseID = ViewContext.RouteData.Values["id"].ToString();
+        }
+        @{Model.CaseId = CaseID;}
+        @for (int i = 0; i < Model.getActivityQuestions(CaseID).Count(); i++)
+        {
+            Model.QuestionNumber = i.ToString();
+            if (i == questionNumber)
+            {
+                string questionText = Model.getActivityQuestions(CaseID).Select(m => m.question_text).Skip(i).FirstOrDefault().ToString();
+                @Html.Raw(questionText);
+                <br />
+                foreach (var answer in Model.Answers)
+                {
+                    @Html.RadioButtonFor(m => m.SelectedAnswer, answer.Answer_Id, new { onchange = "this.form.submit();" }) @answer.Answer_Text
+                    <br />
+                    string breakMe = "";
+                }
+            }
+        }
+        <br />
+
+        @{
+            var questions = Model.getActivityQuestions(CaseID);
+        }
+        @if (Model.SelectedAnswer != null)
+        {
+            int explanation = int.Parse(Model.SelectedAnswer.ToString());
+            bool isCorrect = Model.IsCorrect(explanation);
+            string explainText = Model.getAnswerExplanation(explanation).ToString();
+            if (isCorrect == true)
+            {
+                @Html.Raw("<div style='border:solid 1px #037614; background-color:#0bd82a; padding:20px;'>")
+                @Html.Raw(explainText);
+                @Html.Raw("</div>")
+                <br />
+                if (questionNumber < questions.Count - 1)
+                {
+                    @Html.Raw("<a href='/CME/Activity/" + CaseID + "/" + (questionNumber + 1) + "'><img src='http://www.nutritionconsultsce.com/Images/proceed.jpg' style='width:200px; border:none;' /></a>")
+                }
+                else
+                {
+                    @Html.Raw("<a href='/CME/PostTest/" + CaseID + "'><img src='http://www.nutritionconsultsce.com/Images/proceed.jpg' style='width:200px; border:none;' /></a>")
+                }
+            }
+            else
+            {
+                @Html.Raw("<div style='border:solid 1px #f00; background-color:#e48989; padding:20px;'>")
+                @Html.Raw(explainText)
+                @Html.Raw("</div>")
+            }
+        }
+    </div>
+
+</form>

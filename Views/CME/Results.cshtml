@@ -1,0 +1,39 @@
+﻿
+@model TestModel
+@{
+    ViewData["Title"] = "Results";
+}
+
+<h2>Results</h2>
+
+<form asp-action="Results" asp-controller="CME" id="myForm" name="myForm" method="post">
+    @{
+        int caseID = int.Parse(ViewContext.RouteData.Values["id"].ToString());
+        
+        int userID = int.Parse(Model.UserId);
+        float grade = Model.getGrade(userID, caseID);
+        //string email = Model.getParticipantData(userID).Select(x => x.email).FirstOrDefault();
+        string title = Model.getActivityData(caseID).Select(x => x.Case_Title).FirstOrDefault();
+    }
+    @if (grade >= 75)
+    {
+        //pass
+        @Html.Raw("<br /><br />Activity Title: <b>\"" + @title + "\"</b>.");
+        @Html.Raw("<br /><br />");
+        @Html.Raw("<b>Congratulations!</b> You have a passing grade of " + @grade + "%.<br /><br />");
+        @Html.Raw("Proceed to complete the evaluation and claim credit.") ;
+        @Html.Raw("<br /><br /><br /><br />");
+        <input type="image" name="submit_blue" value="Submit" alt="Proceed" src="~/Images/proceed.jpg" style="width:200px;" />
+    }
+    else
+    {
+        //fail
+        int? attempt = Model.getAttemptCount(userID, caseID);
+        @Html.Raw("<br /><br />");
+        @Html.Raw("Sorry! You have a failing grade of " + @grade + "%.");
+        @Html.Raw("<br /><br />");
+        @Html.Raw("Please proceed to review this activity again. Participants get 3 attempts to pass. The number of times you have attempted this activity is " + attempt.ToString() + ".");
+        @Html.Raw("<br /><br /><br /><br />");
+        <a href="/CME/PreTest/@caseID"><img src="~/Images/proceed.jpg" style="width:200px;" /></a>
+    }
+</form>

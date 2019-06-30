@@ -1,0 +1,25 @@
+﻿
+@using WebApplication5.Models;
+
+@{
+    ViewData["Title"] = "CE Data";
+}
+
+
+<h2>CEData</h2>
+
+<fieldset>
+    <legend style="font-size:1.6em;">
+    </legend>
+    <div style="padding:15px;">
+        @foreach (var myData in Model.myCEData)
+        {
+            <p>
+                @Html.Raw(myData.ce_data)
+            </p>
+            <br />
+            <a href="/CME/PreTest/@Html.Raw(myData.case_id)"><img src="~/Images/proceed.jpg" style="width:200px;" /></a>
+        }
+    </div>
+</fieldset>
+
