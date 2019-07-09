@@ -12531,23 +12531,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\owner\\.nuget\\packages\\": {},
+    "C:\\Users\\Alienware\\.nuget\\packages\\": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\owner\\Source\\Repos\\WebApplication5\\WebApplication5.csproj",
+      "projectUniqueName": "C:\\Users\\Alienware\\source\\repos\\Core2Template\\WebApplication5.csproj",
       "projectName": "WebApplication5",
-      "projectPath": "C:\\Users\\owner\\Source\\Repos\\WebApplication5\\WebApplication5.csproj",
-      "packagesPath": "C:\\Users\\owner\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\owner\\Source\\Repos\\WebApplication5\\obj\\",
+      "projectPath": "C:\\Users\\Alienware\\source\\repos\\Core2Template\\WebApplication5.csproj",
+      "packagesPath": "C:\\Users\\Alienware\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Alienware\\source\\repos\\Core2Template\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\owner\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Alienware\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [

@@ -13,6 +13,10 @@
 
   <ItemGroup>
     <Folder Include="Images\" />
+    <Folder Include="wwwroot\css\HomePage\" />
+    <Folder Include="wwwroot\images\HomePage\" />
+    <Folder Include="wwwroot\js\home\" />
+    <Folder Include="wwwroot\js\Modules\" />
   </ItemGroup>
 
 </Project>

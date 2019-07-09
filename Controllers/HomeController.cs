@@ -30,6 +30,14 @@ namespace WebApplication5.Controllers
         {
             Response.Cookies.Delete(key);
         }
+        public ActionResult Main()
+        {
+            return View();
+        }
+        public ActionResult Modules()
+        {
+            return View();
+        }
         public ActionResult CEData(string id)
         {
             int myId = 422;

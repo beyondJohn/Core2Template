@@ -1,0 +1,283 @@
+﻿
+@model WebApplication5.Models.UserModel
+@{
+    ViewData["Title"] = "Account";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+    <h2>Account History</h2>
+
+@using (Html.BeginForm())
+ {
+<div>
+    <fieldset>
+        <legend style="font-size:1.6em;">Account History</legend>
+        <br />
+        @{int userID =  Int32.Parse("23");}
+        <table style="width:900px; ">
+            <tr style="font-weight:700;">
+                @{int countPreTests = Model.accountPrePostHistory(userID, 1).Count();
+                       if (countPreTests != 0)
+                       {
+                    @Html.Raw("<td width='55%'>Activity Title</td><td width='15%'>Progress</td><td width='10%' style='text-align:center;'>Credits</td><td width='40%'>View</td>");
+                       }
+                       else
+                       {
+                    @Html.Raw("<td>You do not have any account activity history</td>");
+                       }
+                }
+            </tr>
+
+            @{
+               foreach(var startedActivity in Model.accountPrePostHistory(userID, 1))//Pretest Complete
+               {
+                   int caseID = startedActivity.Value;
+                @Html.Raw("<tr><td>" + Model.activityData(caseID).Select(x => x.Case_Title).FirstOrDefault() + "</td>");
+                   int? countPostTests = Model.countPostAttempts(caseID, userID);
+                   if (countPostTests != 0)//post test taken
+                   {
+                       int checkPassed = Model.earnedList(caseID, userID).Count();
+                       if (checkPassed != 0)//post test passed
+                       {
+
+                           int checkEval = Model.accountEvaluationHistory(userID, caseID).Count();
+                           if (checkEval != 0)//eval taken
+                           {
+                               var checkEarnedForClaimed = Model.earnedList(caseID, userID);
+                               {
+                                   if (checkEarnedForClaimed != null)
+                                   {
+                                       foreach (var checkClaimed in checkEarnedForClaimed)
+                                       {
+                                           var claimed = checkClaimed.Claimed;
+                                           if (claimed != null)//credit has been claimed
+                                           {
+                @Html.Raw("<td>Activity complete</td>");
+                @Html.Raw("<td style='text-align:center;'>"+ checkClaimed.Claimed + "</td>");
+                @Html.Raw("<td><a href='../CME/certificate/" + caseID + "' >View certificate</a></td></tr>");
+                                           }
+                                           else//no credit claimed
+                                           {
+                @Html.Raw("<td>Evaluation complete</td>");
+                @Html.Raw("<td style='text-align:center;'>0</td>");
+                @Html.Raw("<td><a href='../CME/ClaimCredit/" + caseID + "' >Claim credit</a></td></tr>");
+                                           }
+                                       }
+                                   }
+                               }
+                           }
+                           else//no eval taken
+                           {
+                @Html.Raw("<td>Post-test complete</td>");
+                @Html.Raw("<td style='text-align:center;'>0</td>");
+                @Html.Raw("<td><a href='../CME/Evaluation/" + caseID + "' >Complete evaluation</a></td></tr>");
+                           }
+                       }
+                       else//post test Failed
+                       {
+                           int checkAttempts = Model.countPostAttempts(caseID, userID);
+                           if (checkAttempts < 3)
+                           {
+                @Html.Raw("<td>Post-test <br />(" + checkAttempts.ToString() + " attempts)</td>");
+                @Html.Raw("<td style='text-align:center;'>0</td>");
+                @Html.Raw("<td><a href='../CME/PostTest/"+ caseID + "' >Retake Post-Test</a></td></tr>");
+                           }
+                           else
+                           {
+                @Html.Raw("<td>Post-test <br />(" + checkAttempts.ToString() + " attempts)</td>");
+                @Html.Raw("<td style='text-align:center;'>0</td>");
+                @Html.Raw("<td><a href='../CME/Activity/" + caseID + "/0' >Attempts Exceeded - Return to activity</a></td></tr>");
+                           }
+                       }
+                   }
+                   else//no post test taken
+                   {
+                @Html.Raw("<td>Pre-test complete</td>");
+                @Html.Raw("<td style='text-align:center;'>0</td>");
+                @Html.Raw("<td><a href='../CME/Activity/" + caseID + "/0' >Return to activity</a></td></tr>");
+                   }
+               }
+            }
+        </table>
+        <br />
+    </fieldset>
+</div>
+<br />
+<span style="color:red;">@Html.ValidationSummary(true, "Update Failed.")</span>
+<div>
+    <fieldset>
+        <legend style="font-size:1.6em;">Contact Info</legend>
+        <br /><br />
+        <table>
+            <tr>
+                <td>
+                    @*first Cloumn*@
+                <table>
+                    <tr>
+                        @*first Cloumn, first row*@
+                    <td style="text-align:right;">
+                        @Html.LabelFor(u => u.firstName)
+                        <span style="color:red;">@Html.ValidationMessageFor(u => u.firstName)</span>
+                    </td>
+                    <td style="text-align:left;">
+                        @Html.TextBoxFor(u => u.firstName, new { TabIndex = 1 })
+                    </td>
+                </tr>
+                <tr>
+                    @*first Cloumn, second row*@
+                <td style="text-align:right;">
+                    @Html.LabelFor(u => u.email)
+                    <span style="color:red;">@Html.ValidationMessageFor(u => u.email)</span>
+                </td>
+                <td style="text-align:left;">
+                    @Html.TextBoxFor(u => u.email, new { TabIndex = 3 })
+                </td>
+            </tr>
+            <tr>
+                @*first Cloumn, third row*@
+            <td style="text-align:right;">
+                @Html.LabelFor(u => u.city)
+                <span style="color:red;">@Html.ValidationMessageFor(u => u.city)</span>
+            </td>
+            <td style="text-align:left;">
+                @Html.TextBoxFor(u => u.city, new { TabIndex = 6 })
+            </td>
+        </tr>
+        <tr>
+            @*first Cloumn, fourth row*@
+        <td style="text-align:right;">
+            @Html.LabelFor(u => u.password)
+            <span style="color:red;">@Html.ValidationMessageFor(u => u.password)</span>
+        </td>
+        <td>
+            @Html.TextBoxFor(u => u.password, new { TabIndex = 9 })
+        </td>
+    </tr>
+    <tr>
+        @*first Cloumn, fifth row*@
+    <td style="text-align:right;">
+        @Html.LabelFor(u => u.designation)
+    </td>
+    <td>
+        @Html.DropDownListFor(u => u.designation, Model.designationDDLList, new { TabIndex = 11})
+    </td>
+</tr>
+<tr style="height:25px;">
+    @*First Cloumn, sixth row*@
+<td></td>
+<td style="position:relative; top:10px;">
+    <input type="submit" value="Update" />
+</td>
+</tr>
+</table>
+</td>
+<td>
+    @*second Cloumn*@
+<table>
+    <tr>
+        @*Second Cloumn, first row*@
+    <td style="text-align:right;">
+        @Html.LabelFor(u => u.lastName)
+        <span style="color:red;">@Html.ValidationMessageFor(u => u.lastName)</span>
+    </td>
+    <td style="text-align:left;">
+        @Html.TextBoxFor(u => u.lastName, new { TabIndex = 2 })
+    </td>
+</tr>
+<tr>
+    @*Second Cloumn, second row*@
+<td style="text-align:right;">
+    @Html.LabelFor(u => u.address)
+    <span style="color:red;">@Html.ValidationMessageFor(u => u.address)</span>
+</td>
+<td style="text-align:left;">
+    @Html.TextBoxFor(u => u.address, new { TabIndex = 4 })
+</td>
+</tr>
+<tr>
+    @*Second Cloumn, third row*@
+<td style="text-align:right;">
+    @Html.LabelFor(u => u.state)
+</td>
+<td>
+    @Html.DropDownListFor(u => u.state, Model.stateDDLList, new { TabIndex = 7 })
+</td>
+</tr>
+<tr>
+    @*Second Cloumn, fourth row*@
+<td style="text-align:right;">
+    @Html.LabelFor(u => u.phone)
+    <span style="color:red;">@Html.ValidationMessageFor(u => u.phone)</span>
+</td>
+<td>
+    @Html.TextBoxFor(u => u.phone, new { TabIndex = 10 })
+</td>
+</tr>
+<tr>
+    @*Second Cloumn, fourth row*@
+<td style="text-align:right;">
+    @Html.LabelFor(u => u.specialty)
+</td>
+<td>
+    @Html.DropDownListFor(u => u.specialty, Model.specialtyDDLList, new { TabIndex = 12 })
+</td>
+</tr>
+<tr style="height:25px;">
+    @*Second Cloumn, sixth row*@
+<td></td>
+<td></td>
+</tr>
+</table>
+</td>
+<td>
+    @*third Cloumn*@
+<table>
+    <tr style="height:25px;">
+        @*Third Cloumn, first row*@
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    @*Third Cloumn, second row*@
+<td style="position:relative; left:-90px; top:2px;">
+    @Html.LabelFor(u => u.address2)
+    <span style="color:red;">@Html.ValidationMessageFor(u => u.address2)</span>
+</td>
+<td style="position:relative; left:-90px; top:2px;">
+    @Html.TextBoxFor(u => u.address2, new { TabIndex = 5 })
+</td>
+</tr>
+<tr>
+    @*Third Cloumn, third row*@
+<td style="text-align:right; left:-90px; top:2px; position:relative;">
+    @Html.LabelFor(u => u.zipCode)
+    <span style="color:red;">@Html.ValidationMessageFor(u => u.zipCode)</span>
+</td>
+<td style="text-align:right; left:-90px; top:2px; position:relative;">
+    @Html.TextBoxFor(u => u.zipCode, new { TabIndex = 8 })
+</td>
+</tr>
+<tr>
+    @*Third Cloumn, fourth row*@
+<td style="text-align:right; height:25px;"></td>
+<td></td>
+</tr>
+<tr style="height:25px;">
+    @*Third Cloumn, fifth row*@
+<td></td>
+<td></td>
+</tr>
+<tr style="height:25px;">
+    @*Third Cloumn, sixth row*@
+<td></td>
+<td></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<br /><br />
+</fieldset>
+<br />
+</div>
+ }

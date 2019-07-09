@@ -9,7 +9,7 @@
 <h2>Activity</h2>
 
 <form asp-action="Activity" asp-controller="CME" id="myForm" name="myForm" method="post">
-    <div style="padding:15px;">
+    <div style="padding:15px; padding-bottom:75px;">
 
         @{
             string CaseID = "783";
@@ -25,55 +25,111 @@
         {
             CaseID = ViewContext.RouteData.Values["id"].ToString();
         }
-        @{Model.CaseId = CaseID;}
+        @{
+            Model.CaseId = CaseID;
+            string openingText = "";
+            string questionText = "";}
         @for (int i = 0; i < Model.getActivityQuestions(CaseID).Count(); i++)
         {
             Model.QuestionNumber = i.ToString();
             if (i == questionNumber)
             {
-                string questionText = Model.getActivityQuestions(CaseID).Select(m => m.question_text).Skip(i).FirstOrDefault().ToString();
-                @Html.Raw(questionText);
-                <br />
+                openingText = Model.getActivityQuestions(CaseID)
+                    .Select(m => m.Opening_Text)
+                    .Skip(i)
+                    .FirstOrDefault()
+                    .ToString();
+                var answerCount = Model.Answers.Count;
+        @Html.Raw(openingText);
+        <br />
+                questionText = Model.getActivityQuestions(CaseID).Select(m => m.question_text).Skip(i).FirstOrDefault().ToString();
+        @Html.Raw(questionText);
+        <br />
                 foreach (var answer in Model.Answers)
                 {
-                    @Html.RadioButtonFor(m => m.SelectedAnswer, answer.Answer_Id, new { onchange = "this.form.submit();" }) @answer.Answer_Text
-                    <br />
+        @Html.RadioButtonFor(m => m.SelectedAnswer, answer.Answer_Id, new { onchange = "selected(this);" })  @answer.Answer_Text
+        <br />
                     string breakMe = "";
                 }
             }
         }
-        <br />
-
         @{
-            var questions = Model.getActivityQuestions(CaseID);
-        }
-        @if (Model.SelectedAnswer != null)
-        {
-            int explanation = int.Parse(Model.SelectedAnswer.ToString());
-            bool isCorrect = Model.IsCorrect(explanation);
-            string explainText = Model.getAnswerExplanation(explanation).ToString();
-            if (isCorrect == true)
+            var check = openingText;
+            if (Model.Answers.Count == 0)
             {
-                @Html.Raw("<div style='border:solid 1px #037614; background-color:#0bd82a; padding:20px;'>")
-                @Html.Raw(explainText);
-                @Html.Raw("</div>")
-                <br />
-                if (questionNumber < questions.Count - 1)
+                if (questionText == "<font color=\"white\">.</font>")
                 {
-                    @Html.Raw("<a href='/CME/Activity/" + CaseID + "/" + (questionNumber + 1) + "'><img src='http://www.nutritionconsultsce.com/Images/proceed.jpg' style='width:200px; border:none;' /></a>")
-                }
-                else
-                {
-                    @Html.Raw("<a href='/CME/PostTest/" + CaseID + "'><img src='http://www.nutritionconsultsce.com/Images/proceed.jpg' style='width:200px; border:none;' /></a>")
-                }
-            }
-            else
-            {
-                @Html.Raw("<div style='border:solid 1px #f00; background-color:#e48989; padding:20px;'>")
-                @Html.Raw(explainText)
-                @Html.Raw("</div>")
-            }
-        }
-    </div>
 
+            @Html.Raw("<a href='/CME/PostTest/" + CaseID + "'><img src='http://www.nutritionconsultsce.com/Images/proceed.jpg' style='width:200px; border:none;' /></a>")
+                }
+
+            }
+
+        }
+        <br />
+        <div id="divResponse">
+        </div>
+        <div id="divArrow" style="display:block; margin:25px 0;">
+        </div>
+        <div id="floor">
+        </div>
+    </div>
 </form>
+<script>
+    var questionCount = @Model.getActivityQuestions(ViewContext.RouteData.Values["id"].ToString()).Count();
+    var arrowDiv = document.getElementById("divArrow");
+    console.log("questionCount: ", questionCount);
+    var responseJson = [];
+    function selected(btn) {
+        if (responseJson.length > 0) {
+            for (var i = 0; i < responseJson.length; i++) {
+                var responseObj = JSON.parse(JSON.stringify(responseJson[i]));
+                if (Object.keys(responseObj)[0] === btn.value) {
+                    var responseDiv = document.getElementById("divResponse");
+                    responseDiv.innerHTML = responseObj[btn.value]["explain"];
+                    if (responseObj[btn.value]["correct"] === "1") {
+                        responseDiv.style = "border:solid 1px #037614; background-color:#0bd82a; padding:20px;";
+                    }
+                    else {
+                        responseDiv.style = "border:solid 1px #f00; background-color:#e48989; padding:20px;"
+                    }
+                    if (responseObj[btn.value]["correct"] === "1") {
+                        if (@ViewContext.RouteData.Values["q"].ToString() < questionCount - 1) {
+                            arrowDiv.innerHTML =
+                            '<a href="/CME/Activity/@ViewContext.RouteData.Values["id"].ToString()/@(int.Parse(ViewContext.RouteData.Values["q"].ToString())+1)"><img src="http://www.nutritionconsultsce.com/Images/proceed.jpg" style="width:200px; border:none;" /></a>';
+                        }
+                        else {
+                            arrowDiv.innerHTML =
+                                '<a href="/CME/PostTest/@ViewContext.RouteData.Values["id"].ToString()"><img src="http://www.nutritionconsultsce.com/Images/proceed.jpg" style="width:200px; border:none;" /></a>';
+                        }
+                    }
+                    else {
+                        arrowDiv.innerHTML = "";
+                    }
+                    window.location.href = "#floor";
+                }
+            }
+        }
+
+    }
+    function loadDoc() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                responseJson = this.responseText;
+
+                // remove (hidden)carriage return & new line characters
+                responseJson = responseJson.replace(/\r?\n|\r/g, "");
+
+                responseJson = JSON.parse(responseJson);
+            }
+        };
+        xhttp.open("GET", window.location.origin + "/api/answers/"
+            + @int.Parse(ViewContext.RouteData.Values["id"].ToString())
+            +"/"
+            + @int.Parse(ViewContext.RouteData.Values["q"].ToString()), true);
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.send();
+    }
+    loadDoc();
+</script>

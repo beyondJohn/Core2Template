@@ -4,10 +4,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - WebApplication5</title>
-
+    <link rel="stylesheet" href="~/css/site.css" />
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-        <link rel="stylesheet" href="~/css/site.css" />
+
     </environment>
     <environment exclude="Development">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
@@ -17,36 +17,34 @@
     </environment>
 </head>
 <body>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar navbar-inverse navbar-fixed-top" style="background-color: #910202 !important;">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">WebApplication5</a>
+                <a class="navbar-brand" href="/">Hematology Consults</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/">About</a></li>
+                    <li><a href="/">Contact</a></li>
                 </ul>
-                <partial name="_LoginPartial" />
+
+
+                <ul class="nav navbar-nav navbar-right" >
+                    <partial name="_LoginPartial" />
+                </ul>
+
             </div>
         </div>
-    </nav>
-
-    <partial name="_CookieConsentPartial" />
+    </div>
 
     <div class="container body-content">
         @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; 2019 - WebApplication5</p>
-        </footer>
     </div>
 
     <environment include="Development">
@@ -69,7 +67,23 @@
         </script>
         <script src="~/js/site.min.js" asp-append-version="true"></script>
     </environment>
+    <div class="FtrBg">
+        <div class="container">
 
+            &copy; 2019 - Hematology Consults
+
+            <ul>
+                <li>
+                    <a href="http://www.oncologyconsults.com/" target="_blank">Visit OncologyConsults</a>
+                </li>
+                <li>
+                    <a href="#" target="_blank">Contact Us</a>
+                </li>
+            </ul>
+        </div>
+    </div>
     @RenderSection("Scripts", required: false)
+
+
 </body>
 </html>

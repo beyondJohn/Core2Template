@@ -16,7 +16,7 @@ namespace WebApplication5.Models
             .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
             .AddJsonFile("appsettings.json")
             .Build();
-            optionsBuilder.UseSqlServer(configuration.GetConnectionString("JhasioConnection"));
+            optionsBuilder.UseSqlServer(configuration.GetConnectionString("JhasioConnectionString"));
         }
         [Table("User_Table")]
         public class User_Table
@@ -26,6 +26,17 @@ namespace WebApplication5.Models
             public string First_Name { get; set; }
             public string Last_Name { get; set; }
             public int? UId { get; set; }
+            public string Email { get; set; }
+            public string Password { get; set; }
+            public int? User_Role_Id { get; set; }
+            public string phone { get; internal set; }
+            public string Address { get; set; }
+            public string Adress2 { get; set; }
+            public string City { get; set; }
+            public string State { get; set; }
+            public string Zip { get; set; }
+            public string Specialty { get; set; }
+            public string Degree { get; set; }
         }
         public DbSet<User_Table> Users { get; set; }
 
@@ -116,9 +127,27 @@ namespace WebApplication5.Models
             public int? Pass { get; set; }
             public int? Type { get; set; }
             public string Date { get; set; }
-            public float? Claimed { get; set; }
+            public double? Claimed { get; set; }
         }
         public DbSet<Earned_CE_Table> EarnedCE { get; set; }
+
+        //
+        [Table("Eval_Collector")]
+        public class Eval_Collector
+        {
+            [Key]
+            public int EntryId { get; set; }
+            public int? EvalId { get; set; }
+            public string QuestionNum { get; set; }
+            public int? EvalResponseNum { get; set; }
+            public string EvalResponeText { get; set; }
+            public int? UserId { get; set; }
+            public int? QuestionType { get; set; }
+            public int? EvalType { get; set; }
+            public int? QuestionNumFK { get; set; }
+            public DateTime UpdateTime { get; set; }
+        }
+        public DbSet<Eval_Collector> EvalCollector { get; set; }
 
         //
         public class asimQuestion

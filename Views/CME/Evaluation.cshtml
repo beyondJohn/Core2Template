@@ -1,0 +1,132 @@
+﻿
+@model WebApplication5.Models.TestModel
+@{
+    ViewData["Title"] = "Evaluation";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Evaluation</h2>
+
+<div style="padding-left:15px; padding-right:15px;">
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { name = "myForm", id = "myForm", style="margin-bottom: 100px;" }))
+    {
+        int CaseID = 422;
+        if (ViewContext.RouteData.Values["id"] != null)
+        {
+            CaseID = int.Parse(ViewContext.RouteData.Values["id"].ToString());
+        }
+        int selectedIfYesAdder = 0;
+        int SelectedEvaluationAnswersAdder = 0;
+        int selectedTextOnlyAdder = 0;
+        for (int i = 0; i < Model.getEvalQuestions(CaseID).Count(); i++)
+        {
+            string questionText = Model.getEvalQuestions(CaseID).Select(m => m.question_text).Skip(i).FirstOrDefault().ToString();
+            int questionID = int.Parse(Model.getEvalQuestions(CaseID).Select(m => m.Question_Id).Skip(i).FirstOrDefault().ToString());
+            @Html.Raw(questionText);
+            <br />
+            int questionType = Model.getQuestionType(questionID);
+            if (questionType == 6)//Confident
+            {
+                //string[] excellents = new string[] { "Not confident at all", "Not very confident", "Neutral", "Very confident", "Extremely confident" };
+                for (int ii = 4; ii >= 0; ii--)
+                {
+                    @Html.RadioButtonFor(m => m.SelectedEvaluationAnswers[SelectedEvaluationAnswersAdder], ii)
+                    @((ii + 1).ToString())
+                    @Html.Raw("&nbsp;&nbsp;")
+                }
+                @Html.Raw("<br /><span style='color:Gray;font-size:Small;'>5 = Extremely Confident | 4 = Very Confident | 3 = Neutral | 2 = Not Very Confident | 1 = Not Confident At All</span>");
+                SelectedEvaluationAnswersAdder++;
+            }
+            if (questionType == 7)//strongly agree
+            {
+                //string[] stronglies = new string[] { "Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree" };
+                for (int ii = 4; ii >= 0; ii--)
+                {
+                    @Html.RadioButtonFor(m => m.SelectedEvaluationAnswers[SelectedEvaluationAnswersAdder], ii)
+                    @((ii + 1).ToString())
+                    @Html.Raw("&nbsp;&nbsp;")
+                }
+                @Html.Raw("<br /><span style='color:Gray;font-size:Small;'>5 = Strongly Agree | 4 = Agree | 3 = Neutral | 2 = Disagree | 1 = Strongly Disagree</span>");
+                SelectedEvaluationAnswersAdder++;
+            }
+
+            if (questionType == 8)//If Yes '1 = yes'
+            {
+                string[] ifYes = new string[] { "No", "Yes" };
+                for (int ii = 0; ii < 2; ii++)
+                {
+                    @Html.RadioButtonFor(m => m.SelectedIfYesAnswers[selectedIfYesAdder], ii)
+                    @ifYes[ii]
+                    if (ii == 1)
+                    {
+                        @Html.Raw(" (If yes, please explain.)")
+                    }
+                    <br />
+                }
+                @Html.TextAreaFor(t => t.ifYesText, questionID)
+                selectedIfYesAdder++;
+            }
+            if (questionType == 10)//Excellent
+            {
+                //string[] excellents = new string[] { "Strongly Disagree", "Poor", "Fair", "Very Good", "Excellent" };
+                for (int ii = 4; ii >= 0; ii--)
+                {
+                    @Html.RadioButtonFor(m => m.SelectedEvaluationAnswers[SelectedEvaluationAnswersAdder], ii)
+                    @((ii + 1).ToString())
+                    @Html.Raw("&nbsp;&nbsp;")
+                }
+                @Html.Raw("<br /><span style='color:Gray;font-size:Small;'>5 = Excellent | 4 = Very Good | 3 = Fair | 2 = Poor | 1 = Very Poor</span>");
+                SelectedEvaluationAnswersAdder++;
+            }
+            if (questionType == 22)//Always Often
+            {
+                string[] excellents = new string[] { "Never", "Sometimes", "Often", "Always" };
+                for (int ii = 0; ii < 4; ii++)
+                {
+                    @Html.RadioButtonFor(m => m.SelectedEvaluationAnswers[SelectedEvaluationAnswersAdder], ii)
+                    @excellents[ii]
+                    <br />
+                }
+                SelectedEvaluationAnswersAdder++;
+            }
+            if (questionType == 14)//Text Only
+            {
+                @Html.TextAreaFor(t => t.textOnly[selectedTextOnlyAdder], questionID)
+                selectedTextOnlyAdder++;
+            }
+            @Html.Raw("<br />");
+            @*Mulitple Choice Question Type 13
+                foreach (var answer in Model.getAnswers(questionID))
+                {
+                    @Html.RadioButtonFor(m => m.SelectedEvaluationAnswers[i], answer.answer_id)
+                    @answer.answer_text
+                    <br />
+                }
+            *@<br />
+        }
+        <script type="text/javascript">
+                function checkRadios() {
+                    var names = {};
+                    $('input:radio').each(function () { // find unique names
+                        names[$(this).attr('name')] = true;
+                    });
+                    var count = 0;
+                    $.each(names, function () { // then count them
+                        count++;
+                    });
+                    if ($('input:radio:checked').length == count) {
+                        // all questions answered
+                        //alert($('input:radio:checked').contents) //uncomment to view underlying javascript
+                        $("#myForm").submit();
+                    }
+                    else {
+                        alert("Please answer all questions before proceeding. Thank you!");
+                    }
+                }
+        </script>
+        <br />
+        <div onclick="checkRadios()" style="cursor:pointer;">
+            <img src="~/Images/proceed.jpg" style="width:200px;" />
+        </div>
+    }
+</div>

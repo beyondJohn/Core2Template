@@ -23,10 +23,10 @@ namespace WebApplication5.Controllers
             int myId = int.Parse(id.ToString());
             //read cookie from IHttpContextAccessor  
             //
-            var loggedIn = _httpContextAccessor.HttpContext.Request.Cookies[".AspNetCore.Identity.Application"];
+            //_httpContextAccessor.HttpContext.Request.Cookies[".AspNetCore.Identity.Application"];
             //read cookie from Request object  
-            string caseId = Request.Cookies["CaseId"];
-            string userId = Request.Cookies["UserId"];
+            string caseId = id;
+            string userId = Request.Cookies["uID"];
 
             //if (!userId.Any())
             //    return RedirectToAction("Login", "User");
@@ -35,10 +35,15 @@ namespace WebApplication5.Controllers
             //    return RedirectToAction("Index", "Home");
 
             //
+            var check = User.Identity.IsAuthenticated;
+            if (!check)
+            {
+                return RedirectToAction("Account", "Identity", new { id = "Login" });
+            }
             int checkTaken = 0;
             using (var db = new ModelDbContext())
             {
-                var cId = int.Parse(caseId);
+                var cId = int.Parse(id);
                 var uId = int.Parse(userId);
                 checkTaken = (db.DataCollectionTable
                     .Where(x => x.Case_Id == cId
@@ -60,9 +65,14 @@ namespace WebApplication5.Controllers
         [HttpPost]
         public ActionResult PreTest(TestModel myModel, IFormCollection form, string id)
         {
+            var check = User.Identity.IsAuthenticated;
+            if (!check)
+            {
+                return RedirectToAction("Account", "Identity", new { id = "Login" });
+            }
             TestModel myTestModel = myModel;
-            int userID = int.Parse(Request.Cookies["UserId"]);
-            int caseID = int.Parse(Request.Cookies["CaseId"]);
+            int userID = int.Parse(Request.Cookies["uID"]);
+            int caseID = int.Parse(id);
             if (id != null)
             {
                 caseID = int.Parse(id);
@@ -116,12 +126,22 @@ namespace WebApplication5.Controllers
         [HttpGet]
         public ActionResult Activity()
         {
+            var check = User.Identity.IsAuthenticated;
+            if (!check)
+            {
+                return RedirectToAction("Account", "Identity", new { id = "Login" });
+            }
             TestModel myTestModel = new TestModel();
             return View(myTestModel);
         }
         [HttpPost]
         public ActionResult Activity(TestModel myModel)
         {
+            var check = User.Identity.IsAuthenticated;
+            if (!check)
+            {
+                return RedirectToAction("Account", "Identity", new { id = "Login" });
+            }
             return View(myModel);
         }
         //End Activity
@@ -130,14 +150,35 @@ namespace WebApplication5.Controllers
         [HttpGet]
         public ActionResult PostTest(string id)
         {
-            if (Request.Cookies["uID"] == null)
+            var check = User.Identity.IsAuthenticated;
+            if (!check)
             {
-                return RedirectToAction("Login", "User");
+                return RedirectToAction("Account" , "Identity", new { id = "Login" });
             }
+            int userId = 0;
+            CookieOptions option = new CookieOptions();
+            option.Expires = DateTime.Now.AddMinutes(1200);
+            option.IsEssential = true;
             TestModel myTestModel = new TestModel();
+            using (var db = new ModelDbContext())
+            {
+                var user = db.Users.Where(x => x.Email == User.Identity.Name);
+                if (user.Any())
+                {
+                    userId = user.Single().User_Id;
+                    Response.Cookies.Append("uID", userId.ToString(), option);
+                    Response.Cookies.Append("uN", user.Single().First_Name, option);
+                }
+                else
+                {
+                    
+                    // Create user account if necessary
+                    var newUserId = myTestModel.CrossLogin(User.Identity.Name);
+                    Response.Cookies.Append("uID", newUserId.ToString(), option);
+                }
 
-            int userID = 0;// int.Parse(Request.Cookies["uID"].Value.ToString());
-
+            }
+            int userID = userId;// int.Parse(Request.Cookies["uID"].Value.ToString());
             int caseID = int.Parse(id);
             //if (Request.QueryString["id"] != null)
             //{
@@ -166,9 +207,10 @@ namespace WebApplication5.Controllers
         [HttpPost]
         public ActionResult PostTest(TestModel myModel, string id)
         {
-            if (Request.Cookies["uID"] == null)
+            var check = User.Identity.IsAuthenticated;
+            if (!check)
             {
-                return RedirectToAction("Login", "User");
+                return RedirectToAction("Account", "Identity", new { id = "Login" });
             }
             TestModel myTestModel = myModel;
             int userID = int.Parse(Request.Cookies["uID"]);
@@ -225,6 +267,11 @@ namespace WebApplication5.Controllers
         [HttpGet]
         public ActionResult Results(string id)
         {
+            var check = User.Identity.IsAuthenticated;
+            if (!check)
+            {
+                return RedirectToAction("Account", "Identity", new { id = "Login" });
+            }
             int userID = int.Parse(Request.Cookies["uID"]);
             int caseID = 0;
             if (id != null)
@@ -276,6 +323,11 @@ namespace WebApplication5.Controllers
         [HttpPost]
         public ActionResult Results(TestModel myModel, string id)
         {
+            var check = User.Identity.IsAuthenticated;
+            if (!check)
+            {
+                return RedirectToAction("Account", "Identity", new { id = "Login" });
+            }
             int caseID = 0;
             if (id != null)
             {
@@ -285,14 +337,149 @@ namespace WebApplication5.Controllers
         }
         //End Results
 
+        //Begin Evaluation
+        [HttpGet]
+        public ActionResult Evaluation(string id)
+        {
+            TestModel myTestModel = new TestModel();
+            int userID = int.Parse(Request.Cookies["uID"].ToString());
+            int caseID = 422;
+            if (id != null)
+            {
+                caseID = int.Parse(id);
+            }
+            if (myTestModel.IsEvalAlreadyTaken(userID, caseID) != false)
+            {
+                return RedirectToAction("ClaimCredit", "CME", new { id = caseID });
+            }
+            return View(myTestModel);
+        }
+        [HttpPost]
+        public ActionResult Evaluation(TestModel myModel, string id)
+        {
+            TestModel myTestModel = myModel;
+            int userID = int.Parse(Request.Cookies["uID"].ToString());
+            int caseID = 422;
+            if (id != null)
+            {
+                caseID = int.Parse(id);
+            }
+            if (myTestModel.IsEvalAlreadyTaken(userID, caseID) != false)
+            {
+                return RedirectToAction("ClaimCredit", "CME", new { id = caseID });
+            }
+            bool IsEarned = myTestModel.IsEarned(userID, caseID);
+            if (IsEarned != true)
+            {
+                return RedirectToAction("PostTest", "CME", new { id = caseID });
+            }
+            //6)Confident
+            //7)strongly agree
+            //8)If Yes
+            //10/Excellent
+            //14/Text Only
+            //22)Always Often
+            int countEvalQuestions = myTestModel.getEvalQuestions(caseID).Count();
+            int ifYesTextBoxAdder = 0;
+            int textBoxOnlyAdder = 0;
+            int selectedEvaluationAdder = 0;
+            for (int i = 0; i < countEvalQuestions; i++)
+            {
+                List<int> questionIDs = myTestModel.getEvalQuestions(caseID).Select(x => x.Question_Id).ToList();
+                int questionID = questionIDs[i];
+                int questionType = myTestModel.getQuestionType(questionID);
+                if (questionType == 6 || questionType == 7 || questionType == 10 || questionType == 22)
+                {
+                    Eval_Collector collectAnswer = new Eval_Collector
+                    {
+                        QuestionNum = (i + 1).ToString(),
+                        EvalResponseNum = myTestModel.SelectedEvaluationAnswers[selectedEvaluationAdder],
+                        EvalResponeText = null,
+                        UserId = userID,
+                        QuestionType = questionType,
+                        EvalType = 1,
+                        QuestionNumFK = questionID,
+                        EvalId = caseID,
+                        UpdateTime = DateTime.Now
+                    };
+                    using(var db = new ModelDbContext())
+                    {
+                        db.Add(collectAnswer);
+                        db.SaveChanges();
+                        //db.EvalCollector.InsertOnSubmit(collectAnswer);
+                    }
+                    
+                    selectedEvaluationAdder++;
+                }
+                else if (questionType == 8)//If Yes
+                {
+                    Eval_Collector collectAnswer = new Eval_Collector
+                    {
+                        QuestionNum = (i + 1).ToString(),
+                        EvalResponseNum = myTestModel.SelectedIfYesAnswers[ifYesTextBoxAdder],
+                        EvalResponeText = myTestModel.ifYesText[ifYesTextBoxAdder],
+                        UserId = userID,
+                        QuestionType = questionType,
+                        EvalType = 1,
+                        QuestionNumFK = questionID,
+                        EvalId = caseID,
+                        UpdateTime = DateTime.Now
+                    };
+                    using (var db = new ModelDbContext())
+                    {
+                        db.Add(collectAnswer);
+                        db.SaveChanges();
+                    }
+                    ifYesTextBoxAdder++;
+                }
+                else if (questionType == 14)//Text Only
+                {
+                    Eval_Collector collectAnswer = new Eval_Collector
+                    {
+                        QuestionNum = (i + 1).ToString(),
+                        EvalResponseNum = null,
+                        EvalResponeText = myTestModel.textOnly[textBoxOnlyAdder],
+                        UserId = userID,
+                        QuestionType = questionType,
+                        EvalType = 1,
+                        QuestionNumFK = questionID,
+                        EvalId = caseID,
+                        UpdateTime = DateTime.Now
+                    };
+                    using (var db = new ModelDbContext())
+                    {
+                        db.Add(collectAnswer);
+                        db.SaveChanges();
+                    }
+                    textBoxOnlyAdder++;
+                }
+
+            }
+            foreach (var answerID in myTestModel.SelectedEvaluationAnswers)
+            {
+                int questionID = myTestModel.getQuestionID(answerID);
+
+
+            }
+            //db.SubmitChanges();
+            return RedirectToAction("ClaimCredit", "CME", new { id = id });
+            //return View(myModel);
+        }
+        //End Evaluation
+
         //
         //Begin Claim Credit
         [HttpGet]
         public ActionResult ClaimCredit(string id)
         {
+            var check = User.Identity.IsAuthenticated;
+            if (!check)
+            {
+                return RedirectToAction("Account", "Identity", new { id = "Login" });
+            }
             TestModel myTestModel = new TestModel();
             int caseID = int.Parse(id);
-            int userId = int.Parse(Request.Cookies["UserId"]);
+            int userId = int.Parse(Request.Cookies["uID"]);
             bool checkIfClaimed = myTestModel.IsCreditClaimed(caseID, userId);
             if (checkIfClaimed == true)
             {
@@ -303,8 +490,13 @@ namespace WebApplication5.Controllers
         [HttpPost]
         public ActionResult ClaimCredit(TestModel myModel, string id)
         {
+            var check = User.Identity.IsAuthenticated;
+            if (!check)
+            {
+                return RedirectToAction("Account", "Identity", new { id = "Login" });
+            }
             int caseID = 0;
-            int userId = int.Parse(Request.Cookies["UserId"]);
+            int userId = int.Parse(Request.Cookies["uID"]);
             if (id != null)
             {
                 caseID = int.Parse(id);
@@ -318,7 +510,7 @@ namespace WebApplication5.Controllers
                 {
                     ec.Claimed = myModel.claimedCredit;
                     ec.Type = myModel.claimedCreditType;
-                    db.Add(ec);
+                    db.Update(ec);
                 }
                 db.SaveChanges();
 
@@ -330,6 +522,60 @@ namespace WebApplication5.Controllers
         }
         //End Claim Credit
         //
+        //Begin Activity Completed
+        [HttpGet]
+        public ActionResult ActivityComplete()
+        {
+            TestModel myTestModel = new TestModel();
+            return View(myTestModel);
+        }
+        [HttpPost]
+        public ActionResult ActivityComplete(TestModel model, string id)
+        {
+            TestModel myTestModel = model;
+            int caseID = 422;
+            if (id != null)
+            {
+                caseID = int.Parse(id);
+            }
+            int userID = 0;
+            var checkUIDCookie = Request.Cookies["uID"];
+            if (checkUIDCookie != null)
+            {
+                userID = int.Parse(Request.Cookies["uID"].ToString());
+            }
+            //myTestModel.sendMail(caseID, userID);
+            using (var db = new ModelDbContext())
+            {
+                var getClaimed = from c in db.EarnedCE where c.Case_Id == caseID && c.User_Id == userID select c.Type;
+                int claimed = 0;
+                if (getClaimed.FirstOrDefault() != null)
+                {
+                    claimed = int.Parse(getClaimed.FirstOrDefault().ToString());
+                }
+                if (claimed == 1)
+                {
+                    return RedirectToAction("Certificate", "CME", new { id = caseID });
+                }
+                if (claimed == 2)
+                {
+                    return RedirectToAction("NursingCertificate", "CME", new { id = caseID });
+                }
+                if (claimed == 3 || claimed == 4)
+                {
+                    return RedirectToAction("CDRCertificate", "CME", new { id = caseID });
+                }
+                if (claimed == 5)
+                {
+                    return RedirectToAction("ACPECertificate", "CME", new { id = caseID });
+                }
+                else
+                {
+                    return RedirectToAction("Certificate", "CME", new { id = caseID });
+                }
+            }
+        }
+        //End Activity Completed
         public IActionResult Index()
         {
             return View();
