@@ -71,7 +71,7 @@ using WebApplication5.Models;
             WriteLiteral("\r\n<h2>Activity</h2>\r\n\r\n");
             EndContext();
             BeginContext(121, 2358, false);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("form", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "8264d592bab44d7983eaedc55aa2e357", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("form", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "0018ce4e6bd947abb9d1c8d6d57e2938", async() => {
                 BeginContext(210, 58, true);
                 WriteLiteral("\r\n    <div style=\"padding:15px; padding-bottom:75px;\">\r\n\r\n");
                 EndContext();

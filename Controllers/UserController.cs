@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Options;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,13 +12,15 @@ namespace WebApplication5.Controllers
 {
     public class UserController : Controller
     {
+        private readonly AppSettings connections;
+
         public TestModel testModel = new TestModel();
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public UserController(IHttpContextAccessor httpContextAccessor)
+        public UserController(IHttpContextAccessor httpContextAccessor, IOptions<AppSettings> appsettings)
         {
+            connections = appsettings.Value;
             this._httpContextAccessor = httpContextAccessor;
         }
-        public ModelDbContext db = new ModelDbContext();
         public IActionResult Index()
         {
             return View();
@@ -25,22 +28,30 @@ namespace WebApplication5.Controllers
         [HttpGet]
         public ActionResult account()
         {
-            int userID = int.Parse("23");
-            List<User_Table> getUserData = (from u in db.Users where u.User_Id == userID select u).ToList();
+            int userID = int.Parse(Request.Cookies["uID"]);
+            List<User_Table> userData = new List<User_Table>();
+            using(var db = new ModelDbContext())
+            {
+                userData = db.Users
+                    .Where(x => x.User_Id == userID)
+                    .ToList();
+            }
+            
             var user = new UserModel()
             {
-                firstName = getUserData[0].First_Name,
-                lastName = getUserData[0].Last_Name,
-                email = getUserData[0].Email,
-                password = getUserData[0].Password,
-                phone = getUserData[0].phone,
-                address = getUserData[0].Address,
-                address2 = getUserData[0].Adress2,
-                city = getUserData[0].City,
-                state = getUserData[0].State,
-                zipCode = getUserData[0].Zip,
-                specialty = getUserData[0].Specialty,
-                designation = getUserData[0].Degree
+                firstName = userData[0].First_Name,
+                lastName = userData[0].Last_Name,
+                email = userData[0].Email,
+                password = userData[0].Password,
+                phone = userData[0].phone,
+                address = userData[0].Address,
+                address2 = userData[0].Adress2,
+                city = userData[0].City,
+                state = userData[0].State,
+                zipCode = userData[0].Zip,
+                specialty = userData[0].Specialty,
+                designation = userData[0].Degree,
+                UserId = userID
             };
 
             return View(user);
@@ -50,27 +61,34 @@ namespace WebApplication5.Controllers
         {
             if (ModelState.IsValid)
             {
+                List<User_Table> getUserData = new List<User_Table>();
                 int userID = int.Parse(Request.Cookies["uID"].ToString());
-                List<User_Table> getUserData = (from u in db.Users where u.User_Id == userID select u).ToList();
-                foreach (User_Table updateUser in getUserData)
+                using(var db = new ModelDbContext())
                 {
-                    updateUser.First_Name = user.firstName;
-                    updateUser.Last_Name = user.lastName;
-                    updateUser.Email = user.email;
-                    updateUser.Password = user.password;
-                    updateUser.phone = user.phone;
-                    updateUser.Address = user.address;
-                    updateUser.Adress2 = user.address2;
-                    updateUser.City = user.city;
-                    updateUser.State = user.state;
-                    updateUser.Zip = user.zipCode;
-                    updateUser.Specialty = user.specialty;
-                    updateUser.Degree = user.designation;
-                    db.Attach(updateUser);
-                    db.Entry(updateUser);
+                    db.Users
+                        .Where(x => x.User_Id == userID)
+                        .ToList();
+                    foreach (User_Table updateUser in getUserData)
+                    {
+                        updateUser.First_Name = user.firstName;
+                        updateUser.Last_Name = user.lastName;
+                        updateUser.Email = user.email;
+                        updateUser.Password = user.password;
+                        updateUser.phone = user.phone;
+                        updateUser.Address = user.address;
+                        updateUser.Adress2 = user.address2;
+                        updateUser.City = user.city;
+                        updateUser.State = user.state;
+                        updateUser.Zip = user.zipCode;
+                        updateUser.Specialty = user.specialty;
+                        updateUser.Degree = user.designation;
+                        db.Attach(updateUser);
+                        db.Entry(updateUser);
+                    }
+                    db.SaveChanges();
                 }
                 
-                db.SaveChanges();
+                
                 ViewData.Add("userId", userID);
             }
             

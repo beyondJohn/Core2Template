@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Options;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,15 +12,22 @@ namespace WebApplication5.Controllers
 {
     public class CMEController : Controller
     {
+        private readonly IOptions<AppSettings> connections;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public CMEController(IHttpContextAccessor httpContextAccessor)
+        public CMEController(IHttpContextAccessor httpContextAccessor, IOptions<AppSettings> appsettings)
         {
+            connections = appsettings;
             this._httpContextAccessor = httpContextAccessor;
         }
         [HttpGet]
         //Begin PreTest
         public ActionResult PreTest(string id)
         {
+            CookieOptions option = new CookieOptions();
+            option.Expires = DateTime.Now.AddMinutes(1200);
+            option.IsEssential = true;
+            Response.Cookies.Append("CaseId", id, option);
+            Response.Cookies.Append("lastVisited", "PreTest", option);
             int myId = int.Parse(id.ToString());
             //read cookie from IHttpContextAccessor  
             //
@@ -55,7 +63,7 @@ namespace WebApplication5.Controllers
             //
             if (checkTaken != 0)
             {
-                //return RedirectToAction("Activity", "CME", new { id = caseId, q = 0 });
+                return RedirectToAction("Activity", "CME", new { id = caseId, q = 0 });
             }
             var questionsList = new TestModel(_httpContextAccessor).getActivityQuestions(caseId);
             var testModel = new TestModel(_httpContextAccessor);
@@ -65,6 +73,11 @@ namespace WebApplication5.Controllers
         [HttpPost]
         public ActionResult PreTest(TestModel myModel, IFormCollection form, string id)
         {
+            CookieOptions option = new CookieOptions();
+            option.Expires = DateTime.Now.AddMinutes(1200);
+            option.IsEssential = true;
+            Response.Cookies.Append("CaseId", id, option);
+            Response.Cookies.Append("lastVisited", "PreTest", option);
             var check = User.Identity.IsAuthenticated;
             if (!check)
             {
@@ -124,8 +137,13 @@ namespace WebApplication5.Controllers
         //End PreTest
         //Begin Activity
         [HttpGet]
-        public ActionResult Activity()
+        public ActionResult Activity(string id)
         {
+            CookieOptions option = new CookieOptions();
+            option.Expires = DateTime.Now.AddMinutes(1200);
+            option.IsEssential = true;
+            Response.Cookies.Append("CaseId", id, option);
+            Response.Cookies.Append("lastVisited", "Activity", option);
             var check = User.Identity.IsAuthenticated;
             if (!check)
             {
@@ -135,8 +153,13 @@ namespace WebApplication5.Controllers
             return View(myTestModel);
         }
         [HttpPost]
-        public ActionResult Activity(TestModel myModel)
+        public ActionResult Activity(TestModel myModel, string id)
         {
+            CookieOptions option = new CookieOptions();
+            option.Expires = DateTime.Now.AddMinutes(1200);
+            option.IsEssential = true;
+            Response.Cookies.Append("CaseId", id, option);
+            Response.Cookies.Append("lastVisited", "Activity", option);
             var check = User.Identity.IsAuthenticated;
             if (!check)
             {
@@ -150,15 +173,17 @@ namespace WebApplication5.Controllers
         [HttpGet]
         public ActionResult PostTest(string id)
         {
+            CookieOptions option = new CookieOptions();
+            option.Expires = DateTime.Now.AddMinutes(1200);
+            option.IsEssential = true;
+            Response.Cookies.Append("CaseId", id, option);
+            Response.Cookies.Append("lastVisited", "PostTest", option);
             var check = User.Identity.IsAuthenticated;
             if (!check)
             {
                 return RedirectToAction("Account" , "Identity", new { id = "Login" });
             }
             int userId = 0;
-            CookieOptions option = new CookieOptions();
-            option.Expires = DateTime.Now.AddMinutes(1200);
-            option.IsEssential = true;
             TestModel myTestModel = new TestModel();
             using (var db = new ModelDbContext())
             {
@@ -207,6 +232,11 @@ namespace WebApplication5.Controllers
         [HttpPost]
         public ActionResult PostTest(TestModel myModel, string id)
         {
+            CookieOptions option = new CookieOptions();
+            option.Expires = DateTime.Now.AddMinutes(1200);
+            option.IsEssential = true;
+            Response.Cookies.Append("CaseId", id, option);
+            Response.Cookies.Append("lastVisited", "PostTest", option);
             var check = User.Identity.IsAuthenticated;
             if (!check)
             {
@@ -267,6 +297,11 @@ namespace WebApplication5.Controllers
         [HttpGet]
         public ActionResult Results(string id)
         {
+            CookieOptions option = new CookieOptions();
+            option.Expires = DateTime.Now.AddMinutes(1200);
+            option.IsEssential = true;
+            Response.Cookies.Append("CaseId", id, option);
+            Response.Cookies.Append("lastVisited", "Result", option);
             var check = User.Identity.IsAuthenticated;
             if (!check)
             {
@@ -323,6 +358,11 @@ namespace WebApplication5.Controllers
         [HttpPost]
         public ActionResult Results(TestModel myModel, string id)
         {
+            CookieOptions option = new CookieOptions();
+            option.Expires = DateTime.Now.AddMinutes(1200);
+            option.IsEssential = true;
+            Response.Cookies.Append("CaseId", id, option);
+            Response.Cookies.Append("lastVisited", "Result", option);
             var check = User.Identity.IsAuthenticated;
             if (!check)
             {
@@ -341,6 +381,16 @@ namespace WebApplication5.Controllers
         [HttpGet]
         public ActionResult Evaluation(string id)
         {
+            CookieOptions option = new CookieOptions();
+            option.Expires = DateTime.Now.AddMinutes(1200);
+            option.IsEssential = true;
+            Response.Cookies.Append("CaseId", id, option);
+            Response.Cookies.Append("lastVisited", "Evaluation", option);
+            var check = User.Identity.IsAuthenticated;
+            if (!check)
+            {
+                return RedirectToAction("Account", "Identity", new { id = "Login" });
+            }
             TestModel myTestModel = new TestModel();
             int userID = int.Parse(Request.Cookies["uID"].ToString());
             int caseID = 422;
@@ -357,6 +407,16 @@ namespace WebApplication5.Controllers
         [HttpPost]
         public ActionResult Evaluation(TestModel myModel, string id)
         {
+            CookieOptions option = new CookieOptions();
+            option.Expires = DateTime.Now.AddMinutes(1200);
+            option.IsEssential = true;
+            Response.Cookies.Append("CaseId", id, option);
+            Response.Cookies.Append("lastVisited", "Evaluation", option);
+            var check = User.Identity.IsAuthenticated;
+            if (!check)
+            {
+                return RedirectToAction("Account", "Identity", new { id = "Login" });
+            }
             TestModel myTestModel = myModel;
             int userID = int.Parse(Request.Cookies["uID"].ToString());
             int caseID = 422;
@@ -406,7 +466,6 @@ namespace WebApplication5.Controllers
                     {
                         db.Add(collectAnswer);
                         db.SaveChanges();
-                        //db.EvalCollector.InsertOnSubmit(collectAnswer);
                     }
                     
                     selectedEvaluationAdder++;
@@ -472,6 +531,11 @@ namespace WebApplication5.Controllers
         [HttpGet]
         public ActionResult ClaimCredit(string id)
         {
+            CookieOptions option = new CookieOptions();
+            option.Expires = DateTime.Now.AddMinutes(1200);
+            option.IsEssential = true;
+            Response.Cookies.Append("CaseId", id, option);
+            Response.Cookies.Append("lastVisited", "ClaimCredit", option);
             var check = User.Identity.IsAuthenticated;
             if (!check)
             {
@@ -490,6 +554,11 @@ namespace WebApplication5.Controllers
         [HttpPost]
         public ActionResult ClaimCredit(TestModel myModel, string id)
         {
+            CookieOptions option = new CookieOptions();
+            option.Expires = DateTime.Now.AddMinutes(1200);
+            option.IsEssential = true;
+            Response.Cookies.Append("CaseId", id, option);
+            Response.Cookies.Append("lastVisited", "ClaimCredit", option);
             var check = User.Identity.IsAuthenticated;
             if (!check)
             {
@@ -532,8 +601,15 @@ namespace WebApplication5.Controllers
         [HttpPost]
         public ActionResult ActivityComplete(TestModel model, string id)
         {
+            string email = connections.Value.Email.email;
+            string password = connections.Value.Email.password;
+            CookieOptions option = new CookieOptions();
+            option.Expires = DateTime.Now.AddMinutes(1200);
+            option.IsEssential = true;
+            Response.Cookies.Append("CaseId", id, option);
+            Response.Cookies.Append("lastVisited", "ActivityComplete", option);
             TestModel myTestModel = model;
-            int caseID = 422;
+            int caseID = 0;
             if (id != null)
             {
                 caseID = int.Parse(id);
@@ -544,39 +620,61 @@ namespace WebApplication5.Controllers
             {
                 userID = int.Parse(Request.Cookies["uID"].ToString());
             }
-            //myTestModel.sendMail(caseID, userID);
-            using (var db = new ModelDbContext())
-            {
-                var getClaimed = from c in db.EarnedCE where c.Case_Id == caseID && c.User_Id == userID select c.Type;
-                int claimed = 0;
-                if (getClaimed.FirstOrDefault() != null)
-                {
-                    claimed = int.Parse(getClaimed.FirstOrDefault().ToString());
-                }
-                if (claimed == 1)
-                {
+            MailModel mail = new MailModel(caseID.ToString(),userID.ToString(), connections);
+            mail.Envelope("my body of email", "to@email.com", "email subject", "Recipients name");
+            //using (var db = new ModelDbContext())
+            //{
+                //var getClaimed = from c in db.EarnedCE where c.Case_Id == caseID && c.User_Id == userID select c.Type;
+                //int claimed = 0;
+                //if (getClaimed.FirstOrDefault() != null)
+                //{
+                //    claimed = int.Parse(getClaimed.FirstOrDefault().ToString());
+                //}
+                //if (claimed == 1)
+                //{
+                //    return RedirectToAction("Certificate", "CME", new { id = caseID });
+                //}
+                //if (claimed == 2)
+                //{
+                //    return RedirectToAction("NursingCertificate", "CME", new { id = caseID });
+                //}
+                //if (claimed == 3 || claimed == 4)
+                //{
+                //    return RedirectToAction("CDRCertificate", "CME", new { id = caseID });
+                //}
+                //if (claimed == 5)
+                //{
+                //    return RedirectToAction("ACPECertificate", "CME", new { id = caseID });
+                //}
+                //else
+                //{
                     return RedirectToAction("Certificate", "CME", new { id = caseID });
-                }
-                if (claimed == 2)
-                {
-                    return RedirectToAction("NursingCertificate", "CME", new { id = caseID });
-                }
-                if (claimed == 3 || claimed == 4)
-                {
-                    return RedirectToAction("CDRCertificate", "CME", new { id = caseID });
-                }
-                if (claimed == 5)
-                {
-                    return RedirectToAction("ACPECertificate", "CME", new { id = caseID });
-                }
-                else
-                {
-                    return RedirectToAction("Certificate", "CME", new { id = caseID });
-                }
-            }
+                //}
+            //}
         }
         //End Activity Completed
-        public IActionResult Index()
+        //Begin certificate
+        [HttpGet]
+        public ActionResult Certificate()
+        {
+            TestModel myTestModel = new TestModel();
+            int? userId = 0;
+            int? uuId = 0;
+            userId = int.Parse(Request.Cookies["uID"].ToString());
+            var caseId = Request.Cookies["CaseId"];
+            if(caseId != null && userId != null)
+            {
+                // redirect to manage/viewCertificate jhasim1
+                using (var db = new ModelDbContext())
+                {
+                    uuId = db.Users.Where(x => x.User_Id == userId).Select(x => x.UId).FirstOrDefault();
+                    Response.Redirect("http://www.jhasim1.com/Manage/ViewCertificate.aspx?case_id=" + caseId.ToString() + "&z=" + uuId.ToString());
+
+                }
+            }
+            return View();
+        }
+            public IActionResult Index()
         {
             return View();
         }

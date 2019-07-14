@@ -74,7 +74,7 @@ using WebApplication5.Models;
             WriteLiteral("\r\n<h2>ClaimCredit</h2>\r\n\r\n");
             EndContext();
             BeginContext(95, 920, false);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("form", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "93915f6a06b9438687f1da70c8a2d8b0", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("form", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "3c7e00b3b0fc4c4093b28f82fa9b7bf7", async() => {
                 BeginContext(187, 20, true);
                 WriteLiteral("\r\n    <br />\r\n\r\n    ");
                 EndContext();
@@ -171,7 +171,7 @@ Write(Html.Raw("<br /><br /><br />"));
                 WriteLiteral("\r\n    <div onClick=\"document.forms[\'myForm\'].submit();\" style=\"cursor:pointer;\">\r\n        ");
                 EndContext();
                 BeginContext(927, 55, false);
-                __tagHelperExecutionContext = __tagHelperScopeManager.Begin("img", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.SelfClosing, "dbc1392ae7314c94b8246f1187c0b0e0", async() => {
+                __tagHelperExecutionContext = __tagHelperScopeManager.Begin("img", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.SelfClosing, "0e727402adb64af9b8e27f0a4fddf053", async() => {
                 }
                 );
                 __Microsoft_AspNetCore_Mvc_Razor_TagHelpers_UrlResolutionTagHelper = CreateTagHelper<global::Microsoft.AspNetCore.Mvc.Razor.TagHelpers.UrlResolutionTagHelper>();

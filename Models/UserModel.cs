@@ -10,26 +10,33 @@ namespace WebApplication5.Models
 {
     public class UserModel
     {
-        public ModelDbContext db = new ModelDbContext();
+        public int UserId { get; set; }
+        
         public bool checkIfUniqueIDExists(int uID)
         {
             bool ifExists = false;
-            int? countExists = (from b in db.Users where b.UId == uID select b.UId).FirstOrDefault();
-            if (countExists != 0)
+
+            using(var db = new ModelDbContext())
             {
-                ifExists = true;
+                ifExists = db.Users
+                    .Where(X => X.UId == uID)
+                    .Select(x => x.UId)
+                    .Any();
             }
+
             return ifExists;
         }
         public bool IsEmail(string email)
         {
-            var db = new ModelDbContext();
             bool checkForExistingEmail = false;
-            int checkEmail = (from e in db.Users where e.Email == email select e.User_Id).FirstOrDefault();
-            if (checkEmail != 0)
+            using(var db = new ModelDbContext())
             {
-                checkForExistingEmail = true;
+                checkForExistingEmail = db.Users
+                    .Where(x => x.Email == email)
+                    .Select(x => x.User_Id)
+                    .Any();
             }
+
             return (checkForExistingEmail);
         }
         public int participantID { get; set; }
@@ -321,44 +328,69 @@ namespace WebApplication5.Models
         }
         public List<int?> accountPrePostHistory(int? userID, int prePostNumber)
         {
-            List<int?> history = (from h in db.DataCollectionTable
-                                  where h.User_Id == userID
-                                  && h.Pre_Test == prePostNumber
-                                  //&& h.Question_Table.Case_Table.learnin_area_id == 28
-                                  select h.Case_Id).Distinct().ToList();
+            List<int?> history = new List<int?>();
+            using (var db = new ModelDbContext())
+            {
+                history = db.DataCollectionTable.Where(x => x.User_Id == userID
+                && x.Pre_Test == prePostNumber
+                ).Select(x => x.Case_Id).Distinct().ToList();
+            }
+            //history = history.Where(x => x.Value == 28).ToList();
+
             return history;
         }
         public List<int?> accountEvaluationHistory(int? userID, int caseID)
         {
-            List<int?> history = (from ev in db.EvalCollector
-                                  where ev.EvalId == caseID
-                                  && ev.UserId == userID
-                                  select ev.EvalId).Distinct().ToList();
+            List<int?> history = new List<int?>();
+            using (var db = new ModelDbContext())
+            {
+                history = db.EvalCollector
+                    .Where(x => x.EvalId == caseID
+                    && x.UserId == userID)
+                    .Select(x => x.EvalId)
+                    .Distinct()
+                    .ToList();
+            }
             return history;
         }
         public int countPostAttempts(int caseID, int userID)
         {
-            int attempts = (from a in db.DataCollectionTable
-                            where a.Case_Id == caseID
-                            && a.User_Id == userID
-                            && a.Pre_Test == 0
-                            //&& a.Question_Table.Case_Table.learnin_area_id == 28
-                            select a.Attempt).Distinct().Count();
-            return attempts;
+            int attemptCount = 0;
+            using(var db = new ModelDbContext())
+            {
+                attemptCount = db.DataCollectionTable
+                    .Where(x => x.User_Id == userID
+                    && x.Case_Id == caseID
+                    && x.Pre_Test == 0)
+                    .Select(x => x.Attempt)
+                    .Distinct()
+                    .Count();
+            }
+
+            return attemptCount;
         }
         public List<Earned_CE_Table> earnedList(int caseID, int userID)
         {
-            List<Earned_CE_Table> earned = (from el in db.EarnedCE
-                                      where el.Case_Id == caseID
-                                      && el.User_Id == userID
-                                      select el).ToList();
+            List<Earned_CE_Table> earned = new List<Earned_CE_Table>();
+            using(var db = new ModelDbContext())
+            {
+                earned = db.EarnedCE
+                    .Where(x => x.Case_Id == caseID
+                    && x.User_Id == userID)
+                    .ToList();
+            }
             return earned;
         }
         public List<Case_Table> activityData(int caseID)
         {
-            List<Case_Table> activity = (from c in db.Cases
-                                         where c.Case_Id == caseID
-                                         select c).ToList();
+            List<Case_Table> activity = new List<Case_Table>();
+            using(var db = new ModelDbContext())
+            {
+                activity = db.Cases
+                    .Where(x => x.Case_Id == caseID)
+                    .ToList();
+            }
+            
             return activity;
         }
 

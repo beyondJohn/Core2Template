@@ -12,16 +12,17 @@
     <br />
         <div style="padding-left:15px; padding-right:15px;">
             @{
+                //@Html.Raw("An email containing a link to your certificate for this activity has been sent to " + @email + ".<br /><br />"
                 int caseID = int.Parse(ViewContext.RouteData.Values["id"].ToString());
                 int userID = int.Parse(ViewContext.HttpContext.Request.Cookies["uID"].ToString());
                 float grade = Model.getGrade(userID, caseID);
                 string email = Model.getParticipantData(userID).Select(x => x.Email).FirstOrDefault();
                 string title = Model.getActivityData(caseID).Select(x => x.Case_Title).FirstOrDefault();
-            }_
+            }
             @Html.Raw("<br /><br />")
             @Html.Raw("You have successfully completed the activity titled <b>\"" + @title + "\"</b> with a grade of " + @grade + "%.<br /><br />")
-            @Html.Raw("An email containing a link to your certificate for this activity has been sent to " + @email + ".<br /><br />"
-            + "Proceed to view/print your certificate now.<br /><br />Thank you for participating in this activity!")
+
+            Proceed to view/print your certificate now.<br /><br />Thank you for participating in this activity!"
             @Html.Raw("<br /><br /><br />")
             <input type="image" name="Submit" value="Submit" alt="Proceed" src="~/Images/proceed.jpg" style="width:200px;" />
             @Html.Raw("<br /><br />")

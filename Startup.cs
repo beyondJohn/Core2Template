@@ -12,14 +12,28 @@ using Microsoft.EntityFrameworkCore;
 using WebApplication5.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using WebApplication5.Models;
 
 namespace WebApplication5
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IHostingEnvironment env, IConfiguration configuration)
         {
-            Configuration = configuration;
+            //Configuration = configuration;
+            var builder = new ConfigurationBuilder().SetBasePath(env.ContentRootPath)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+                .AddEnvironmentVariables();
+            Configuration = builder.Build();
+
+            var host = new WebHostBuilder()
+                .UseConfiguration(Configuration)
+                .UseKestrel()
+                .UseStartup<Startup>();
+            var check = Configuration.GetConnectionString("defaultConnection");
+            var defaultConnection = Configuration["ConnectionStrings:DefaultConnection"];
+            var defaultConnection1 = Configuration["ConnectionStrings:myDefault"];
         }
 
         public IConfiguration Configuration { get; }
@@ -49,6 +63,7 @@ namespace WebApplication5
             });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.Configure<AppSettings>(Configuration.GetSection("ConnectionStrings"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -49,7 +49,6 @@ C:\Users\Alienware\source\repos\Core2Template\bin\Debug\netcoreapp2.1\WebApplica
 C:\Users\Alienware\source\repos\Core2Template\obj\Debug\netcoreapp2.1\WebApplication5.csproj.CoreCompileInputs.cache
 C:\Users\Alienware\source\repos\Core2Template\obj\Debug\netcoreapp2.1\WebApplication5.RazorAssemblyInfo.cache
 C:\Users\Alienware\source\repos\Core2Template\obj\Debug\netcoreapp2.1\WebApplication5.RazorAssemblyInfo.cs
-C:\Users\Alienware\source\repos\Core2Template\obj\Debug\netcoreapp2.1\UserSecretsAssemblyInfo.cs
 C:\Users\Alienware\source\repos\Core2Template\obj\Debug\netcoreapp2.1\WebApplication5.AssemblyInfoInputs.cache
 C:\Users\Alienware\source\repos\Core2Template\obj\Debug\netcoreapp2.1\WebApplication5.AssemblyInfo.cs
 C:\Users\Alienware\source\repos\Core2Template\obj\Debug\netcoreapp2.1\WebApplication5.TagHelpers.input.cache
@@ -117,3 +116,5 @@ C:\Users\Alienware\source\repos\Core2Template\obj\Debug\netcoreapp2.1\WebApplica
 C:\Users\Alienware\source\repos\Core2Template\obj\Debug\netcoreapp2.1\Razor\Views\CME\Evaluation.g.cshtml.cs
 C:\Users\Alienware\source\repos\Core2Template\obj\Debug\netcoreapp2.1\Razor\Views\CME\ActivityComplete.g.cshtml.cs
 C:\Users\Alienware\source\repos\Core2Template\obj\Debug\netcoreapp2.1\Razor\Views\User\Account.g.cshtml.cs
+C:\Users\Alienware\source\repos\Core2Template\obj\Debug\netcoreapp2.1\Razor\Views\CME\Certificate.g.cshtml.cs
+C:\Users\Alienware\source\repos\Core2Template\obj\Debug\netcoreapp2.1\UserSecretsAssemblyInfo.cs

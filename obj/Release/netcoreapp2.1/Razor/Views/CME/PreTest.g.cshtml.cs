@@ -75,7 +75,7 @@ using WebApplication5.Models;
             WriteLiteral("\r\n<h2>PreTest</h2>\r\n");
             EndContext();
             BeginContext(117, 1784, false);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("form", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "101c62a732414113812d1bb532329fc6", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("form", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "2b17cc414c114177827db29bd1488def", async() => {
                 BeginContext(234, 6, true);
                 WriteLiteral("\r\n\r\n\r\n");
                 EndContext();
@@ -173,7 +173,7 @@ using WebApplication5.Models;
         ");
                 EndContext();
                 BeginContext(1823, 55, false);
-                __tagHelperExecutionContext = __tagHelperScopeManager.Begin("img", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.SelfClosing, "c124fd07a71e421a9817bebff2d9e891", async() => {
+                __tagHelperExecutionContext = __tagHelperScopeManager.Begin("img", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.SelfClosing, "96f7ba0540c84eb98a08d398d497e6b0", async() => {
                 }
                 );
                 __Microsoft_AspNetCore_Mvc_Razor_TagHelpers_UrlResolutionTagHelper = CreateTagHelper<global::Microsoft.AspNetCore.Mvc.Razor.TagHelpers.UrlResolutionTagHelper>();
