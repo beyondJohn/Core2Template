@@ -137,7 +137,36 @@ namespace WebApplication5.Areas.Identity.Pages.Account
                                 var resultCreate = await _userManager.CreateAsync(user, Input.Password);
                                 if (resultCreate.Succeeded)
                                 {
-                                    await _signInManager.SignInAsync(user, isPersistent: false);
+                                    await _signInManager.SignInAsync(user, isPersistent: true);
+                                    int userId = 0;
+                                    CookieOptions option = new CookieOptions();
+                                    option.Expires = DateTime.Now.AddMinutes(1200);
+                                    option.IsEssential = true;
+
+                                    var userExisting = db.Users.Where(x => x.Email == Input.Email);
+                                    if (userExisting.Any())
+                                    {
+                                        userId = userExisting.Single().User_Id;
+                                        Response.Cookies.Append("uID", userId.ToString(), option);
+                                        Response.Cookies.Append("uN", userExisting.Single().First_Name, option);
+
+                                    }
+                                    if (Request.Cookies.Where(x => x.Key == "lastVisited").Any())
+                                    {
+                                        var lastVisited = (Request.Cookies.Where(x => x.Key == "lastVisited").SingleOrDefault().Value.ToString());
+                                        if (lastVisited == "PreTest")
+                                            return LocalRedirect("~/CME/PreTest/" + Request.Cookies.Where(x => x.Key == "CaseId").SingleOrDefault().Value.ToString());
+                                        else if (lastVisited == "Activity")
+                                            return LocalRedirect("~/CME/Activity/" + Request.Cookies.Where(x => x.Key == "CaseId").SingleOrDefault().Value.ToString() + "/0");
+                                        else if (lastVisited == "PostTest")
+                                            return LocalRedirect("~/CME/PostTest/" + Request.Cookies.Where(x => x.Key == "CaseId").SingleOrDefault().Value.ToString());
+                                        else if (lastVisited == "Results")
+                                            return LocalRedirect("~/CME/Results/" + Request.Cookies.Where(x => x.Key == "CaseId").SingleOrDefault().Value.ToString());
+                                        else if (lastVisited == "ClaimCredit")
+                                            return LocalRedirect("~/CME/ClaimCredit/" + Request.Cookies.Where(x => x.Key == "CaseId").SingleOrDefault().Value.ToString());
+                                        else if (lastVisited == "Evaluation")
+                                            return LocalRedirect("~/CME/Evaluation/" + Request.Cookies.Where(x => x.Key == "CaseId").SingleOrDefault().Value.ToString());
+                                    }
                                     return LocalRedirect(returnUrl);
                                 }
                             }

@@ -10,7 +10,7 @@
 <div style="padding-left:15px; padding-right:15px;">
     @using (Html.BeginForm(null, null, FormMethod.Post, new { name = "myForm", id = "myForm", style="margin-bottom: 100px;" }))
     {
-        int CaseID = 422;
+        int CaseID = 0;
         if (ViewContext.RouteData.Values["id"] != null)
         {
             CaseID = int.Parse(ViewContext.RouteData.Values["id"].ToString());

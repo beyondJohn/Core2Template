@@ -22,10 +22,11 @@ namespace WebApplication5.Models
         {
             this._httpContextAccessor = httpContextAccessor;
         }
+        public string ReturnUrl = null;
         public string QuestionNumber = "0";
         public string CaseId = "0";
         public string UserId = "0";
-        public int CrossLogin(string email)
+        public int CrossLogin(string email, string first, string last, string degree, string specialty, string password)
         {
             int userId = 0;
             using (var db = new ModelDbContext())
@@ -41,9 +42,11 @@ namespace WebApplication5.Models
                     User_Table newUser = new User_Table()
                     {
                         Email = email,
-                        First_Name = "",
-                        Last_Name = "",
-                        Password = "password",
+                        First_Name = first,
+                        Last_Name = last,
+                        Password = password,
+                        Specialty = specialty,
+                        Degree = degree,
                         User_Role_Id = 1
 
                     };
@@ -466,8 +469,12 @@ namespace WebApplication5.Models
         }
         //
         //
-
-        public int claimedCredit { get; set; }
+        [Required]
+        [Range(0, 5)]
+        [Display(Name = "Claim Credit")]
+        public float? claimedCredit { get; set; }
+        [Required]
+        [Display(Name = "Claim Credit Type")]
         public int? claimedCreditType { get; set; }
         public double? getMaxCredit(int caseID)
         {

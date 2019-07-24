@@ -42,6 +42,22 @@ namespace WebApplication5.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
+            [Display(Name = "First Name")]
+            public string FirstName { get; set; }
+
+            [Required]
+            [Display(Name = "Last Name")]
+            public string LastName { get; set; }
+
+            [Required]
+            [Display(Name = "Specialty")]
+            public string Specialty { get; set; }
+
+            [Required]
+            [Display(Name = "Degree")]
+            public string Degree { get; set; }
+
+            [Required]
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
@@ -79,9 +95,9 @@ namespace WebApplication5.Areas.Identity.Pages.Account
                     using (var db = new ModelDbContext())
                     {
                         bool found = false;
-                        foreach(var myuser in db.Users)
+                        foreach (var myuser in db.Users)
                         {
-                            if(myuser.Email == User.Identity.Name)
+                            if (myuser.Email == User.Identity.Name)
                             {
                                 userId = myuser.User_Id;
                                 Response.Cookies.Append("uID", userId.ToString(), option);
@@ -95,7 +111,7 @@ namespace WebApplication5.Areas.Identity.Pages.Account
                             TestModel testModel = new TestModel();
                             //testModel.CrossLogin(Input.Email);
                             // Create user account if necessary
-                            var newUserId = testModel.CrossLogin(Input.Email);
+                            var newUserId = testModel.CrossLogin(Input.Email, Input.FirstName, Input.LastName, Input.Degree, Input.Specialty, Input.Password);
                             Response.Cookies.Append("uID", newUserId.ToString(), option);
                         }
                     }

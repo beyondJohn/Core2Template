@@ -6,12 +6,118 @@
 
 <h2>@ViewData["Title"]</h2>
 
-<div class="row">
+<div class="row" style="margin-bottom: 100px;">
     <div class="col-md-4">
         <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
             <h4>Create a new account.</h4>
             <hr />
             <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Input.FirstName"></label>
+                <input asp-for="Input.FirstName" class="form-control" />
+                <span asp-validation-for="Input.LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.LastName"></label>
+                <input asp-for="Input.LastName" class="form-control" />
+                <span asp-validation-for="Input.LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.Specialty"></label>
+                <select asp-for="Input.Specialty" class="form-control" required>
+                    <option value="" selected>Select Specialty</option>
+                    <option value="2">Adolescent Medicine</option>
+                    <option value="3">Allergy</option>
+                    <option value="4">Allergy &amp; Immunology</option>
+                    <option value="5">Anesthesiology</option>
+                    <option value="6">Cardiology</option>
+                    <option value="7">Cardiovascular Surgery</option>
+                    <option value="8">Critical Care Medicine</option>
+                    <option value="9">Dermatology</option>
+                    <option value="58">Diabetes</option>
+                    <option value="10">Emergency Medicine</option>
+                    <option value="11">Endocrinology</option>
+                    <option value="12">Family Practice</option>
+                    <option value="13">Gastroenterology</option>
+                    <option value="14">General Dentistry</option>
+                    <option value="15">General Practice</option>
+                    <option value="16">Geriatrics</option>
+                    <option value="17">Gynecology</option>
+                    <option value="18">Hematology</option>
+                    <option value="19">Hematology &amp; Oncology</option>
+                    <option value="20">Immunology</option>
+                    <option value="21">Infectious Diseases</option>
+                    <option value="23">Internal Medicine</option>
+                    <option value="22">Internal Medicine/Geriatrics</option>
+                    <option value="59">Internal Medicine/Pediatrics </option>
+                    <option value="24">Maternal/Fetal Medicine</option>
+                    <option value="25">Medical Genetics</option>
+                    <option value="26">Neonatalogy</option>
+                    <option value="27">Nephrology</option>
+                    <option value="28">Neurological Surgery</option>
+                    <option value="29">Neurology</option>
+                    <option value="30">Ob/Gyn</option>
+                    <option value="31">Obstetrics</option>
+                    <option value="32">Occupational Medicine</option>
+                    <option value="33">Occupational Therapy</option>
+                    <option value="34">Oncology</option>
+                    <option value="35">Ophthalmology</option>
+                    <option value="36">Optometry</option>
+                    <option value="37">Orthopedic Surgery</option>
+                    <option value="56">Other</option>
+                    <option value="55">Otolaryngologist</option>
+                    <option value="38">Pain Management</option>
+                    <option value="39">Pathology</option>
+                    <option value="40">Pediatrics</option>
+                    <option value="41">Pharmacology, Clinical</option>
+                    <option value="42">Physical Medicine &amp; Rehabilitation</option>
+                    <option value="43">Plastic &amp; Reconstructive Surgery</option>
+                    <option value="57">Podiatry</option>
+                    <option value="44">Preventive Medicine</option>
+                    <option value="45">Psychiatry</option>
+                    <option value="46">Public Health</option>
+                    <option value="47">Pulmonary Disease</option>
+                    <option value="48">Radiology</option>
+                    <option value="49">Respiratory Therapy</option>
+                    <option value="50">Rheumatology</option>
+                    <option value="51">Sports Medicine</option>
+                    <option value="52">Surgery, General</option>
+                    <option value="53">Surgery, Vascular</option>
+                    <option value="54">Urology</option>
+                </select>
+                <span asp-validation-for="Input.Specialty" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.Degree"></label>
+                <select asp-for="Input.Degree" class="form-control">
+                    <option value="" selected>Select Degree</option>
+                    <option value="MD">MD</option>
+                    <option value="CPHT">CPHT</option>
+                    <option value="CRNA">CRNA</option>
+                    <option value="DDS">DDS</option>
+                    <option value="DMD">DMD</option>
+                    <option value="DO">DO</option>
+                    <option value="DPM">DPM</option>
+                    <option value="EMT">EMT</option>
+                    <option value="LPN">LPN</option>
+                    <option value="MT">MT</option>
+                    <option value="Medical Student">Medical Student</option>
+                    <option value="NP">NP</option>
+                    <option value="OD">OD</option>
+                    <option value="OT">OT</option>
+                    <option value="Other">Other</option>
+                    <option value="PA">PA</option>
+                    <option value="PT">PT</option>
+                    <option value="PhD">PhD</option>
+                    <option value="PharmD">PharmD</option>
+                    <option value="RD">RD</option>
+                    <option value="RN">RN</option>
+                    <option value="RN, CDE">RN, CDE</option>
+                    <option value="RPh">RPh</option>
+                    <option value="RT">RT</option>
+                </select>
+                <span asp-validation-for="Input.Degree" class="text-danger"></span>
+            </div>
             <div class="form-group">
                 <label asp-for="Input.Email"></label>
                 <input asp-for="Input.Email" class="form-control" />

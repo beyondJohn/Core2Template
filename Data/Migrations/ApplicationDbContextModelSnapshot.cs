@@ -100,6 +100,10 @@ namespace WebApplication5.Data.Migrations
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256);
+                    b.Property<string>("FirstName")
+                        .HasMaxLength(256);
+                    b.Property<string>("LastName")
+                        .HasMaxLength(256);
 
                     b.HasKey("Id");
 

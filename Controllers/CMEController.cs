@@ -67,6 +67,7 @@ namespace WebApplication5.Controllers
             }
             var questionsList = new TestModel(_httpContextAccessor).getActivityQuestions(caseId);
             var testModel = new TestModel(_httpContextAccessor);
+            testModel.CaseId = caseId;
             return View(testModel);
 
         }
@@ -150,6 +151,7 @@ namespace WebApplication5.Controllers
                 return RedirectToAction("Account", "Identity", new { id = "Login" });
             }
             TestModel myTestModel = new TestModel();
+            myTestModel.CaseId = id;
             return View(myTestModel);
         }
         [HttpPost]
@@ -194,13 +196,13 @@ namespace WebApplication5.Controllers
                     Response.Cookies.Append("uID", userId.ToString(), option);
                     Response.Cookies.Append("uN", user.Single().First_Name, option);
                 }
-                else
-                {
+                //else
+                //{
                     
-                    // Create user account if necessary
-                    var newUserId = myTestModel.CrossLogin(User.Identity.Name);
-                    Response.Cookies.Append("uID", newUserId.ToString(), option);
-                }
+                //    // Create user account if necessary
+                //    var newUserId = myTestModel.CrossLogin(User.Identity.Name);
+                //    Response.Cookies.Append("uID", newUserId.ToString(), option);
+                //}
 
             }
             int userID = userId;// int.Parse(Request.Cookies["uID"].Value.ToString());
@@ -547,8 +549,10 @@ namespace WebApplication5.Controllers
             bool checkIfClaimed = myTestModel.IsCreditClaimed(caseID, userId);
             if (checkIfClaimed == true)
             {
-                return RedirectToAction("ActivityComplete", "CME", new { id = caseID });
+                //return RedirectToAction("ActivityComplete", "CME", new { id = caseID });
             }
+            myTestModel.claimedCredit = null;
+            myTestModel.ReturnUrl = "~/CME/ClaimCredit";
             return View(myTestModel);
         }
         [HttpPost]
@@ -579,7 +583,7 @@ namespace WebApplication5.Controllers
                 {
                     ec.Claimed = myModel.claimedCredit;
                     ec.Type = myModel.claimedCreditType;
-                    db.Update(ec);
+                    db.EarnedCE.Update(ec);
                 }
                 db.SaveChanges();
 

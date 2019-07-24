@@ -3,27 +3,64 @@
 
 @{
     ViewData["Title"] = "ClaimCredit";
+    int caseID = int.Parse(ViewContext.RouteData.Values["id"].ToString());
+    int userID = int.Parse(Model.UserId);
 }
 
 <h2>ClaimCredit</h2>
 
-<form asp-action="ClaimCredit" asp-controller="CME" id="myForm" name="myForm" method="post">
-    <br />
-
-    @Html.Raw("<br />Please only claim credit commensurate to the time you devoted to the activity.<br /><br />")
-    @{
-        int caseID = int.Parse(ViewContext.RouteData.Values["id"].ToString());
-        int userID = int.Parse(Model.UserId);
-
-    }
-    @Html.Raw("The maximum credit avaiable for this activity is <b>")
-    @Model.getMaxCredit(caseID).ToString()
-    @Html.Raw("</b> credit hours.<br /><br />Claim Credit:")
-    @Html.TextBoxFor(x => x.claimedCredit)
-    @Html.Raw("<br /><br />Select credit type: ")
-    @Html.DropDownListFor(d => d.claimedCreditType, Model.DDLList)
-    @Html.Raw("<br /><br /><br />")
-    <div onClick="document.forms['myForm'].submit();" style="cursor:pointer;">
-        <img src="~/Images/proceed.jpg" style="width:200px;" />
-    </div><br /><br />
+<form asp-route-returnUrl="@Model.ReturnUrl" method="post">
+    <h4>Create a new account.</h4>
+    <hr />
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="claimedCredit"></label>
+        <input asp-for="claimedCredit" class="form-control" />
+        <span asp-validation-for="claimedCredit" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="claimedCreditType"></label>
+        <select asp-for="claimedCreditType" class="form-control">
+            <option value="" selected>Select Specialty</option>
+            <option value="1">Doctor</option>
+            <option value="2">Nurse</option>
+        </select>
+        <span asp-validation-for="claimedCreditType" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-default">Claim Credit</button>
 </form>
+<script>
+    var creditInput = document.getElementsByClassName("form-control")[0];
+    creditInput.attributes.removeNamedItem("data-val-range-max");
+    creditInput.setAttribute("data-val-range-max", @Model.getMaxCredit(caseID).ToString());
+    creditInput.attributes.removeNamedItem("data-val-range-min");
+    creditInput.setAttribute("data-val-range-min", ".1");
+    creditInput.attributes.removeNamedItem("data-val-range");
+    creditInput.setAttribute("data-val-range", "The field Claim Credit must be between 0.1 and " + @Model.getMaxCredit(caseID).ToString());
+    //data-val-range-max
+    //data-val-range-min
+</script>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+@*<form asp-action="ClaimCredit" asp-controller="CME" id="myForm" name="myForm" method="post">
+        <br />
+
+        @Html.Raw("<br />Please only claim credit commensurate to the time you devoted to the activity.<br /><br />")
+        @{
+            int caseID = int.Parse(ViewContext.RouteData.Values["id"].ToString());
+            int userID = int.Parse(Model.UserId);
+
+        }
+        @Html.Raw("The maximum credit avaiable for this activity is <b>")
+        @Model.getMaxCredit(caseID).ToString()
+        @Html.Raw("</b> credit hours.<br /><br />Claim Credit:")
+        @Html.TextBoxFor(x => x.claimedCredit)
+        @Html.Raw("<br /><br />Select credit type: ")
+        @Html.DropDownListFor(d => d.claimedCreditType, Model.DDLList)
+        @Html.Raw("<br /><br /><br />")
+        <div onClick="document.forms['myForm'].submit();" style="cursor:pointer;">
+            <img src="~/Images/proceed.jpg" style="width:200px;" />
+        </div><br /><br />
+    </form>*@
