@@ -1,3 +1,3 @@
 var editModules = function () {
-    httpRequest("Post", "http://oncologyconsults.com/api/HemaModule", "application/json", data, makeModules);
-}
+    httpRequest("Post", "https://oncologyconsults.com/api/HemaModule", "application/json", data, makeModules);
+};

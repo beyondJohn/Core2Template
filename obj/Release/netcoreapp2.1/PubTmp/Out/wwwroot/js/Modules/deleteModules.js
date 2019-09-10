@@ -49,6 +49,6 @@ var deleteModule = function (ev) {
 
         // create JSON object containing the temp myModulesDB array, then Post the HTTP request using JSON object as body
         var jsonModulesList = JSON.parse("{\"modulesList\":" + JSON.stringify(myModulesDB) + "}");
-        httpRequest("Post", "http://oncologyconsults.com/api/HemaModule", "application/json", jsonModulesList, refreshAfterSave);
+        httpRequest("Post", "https://oncologyconsults.com/api/HemaModule", "application/json", jsonModulesList, refreshAfterSave);
     }
-}
+};

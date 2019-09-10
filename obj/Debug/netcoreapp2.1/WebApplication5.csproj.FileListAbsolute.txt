@@ -118,3 +118,4 @@ C:\Users\Alienware\source\repos\Core2Template\obj\Debug\netcoreapp2.1\Razor\View
 C:\Users\Alienware\source\repos\Core2Template\obj\Debug\netcoreapp2.1\Razor\Views\User\Account.g.cshtml.cs
 C:\Users\Alienware\source\repos\Core2Template\obj\Debug\netcoreapp2.1\Razor\Views\CME\Certificate.g.cshtml.cs
 C:\Users\Alienware\source\repos\Core2Template\obj\Debug\netcoreapp2.1\UserSecretsAssemblyInfo.cs
+C:\Users\Alienware\source\repos\Core2Template\obj\Debug\netcoreapp2.1\Razor\Views\Home\Modules1.g.cshtml.cs

@@ -22,6 +22,12 @@ namespace WebApplication5.Models
         {
             this._httpContextAccessor = httpContextAccessor;
         }
+        public List<string> userClaimType()
+        {
+            var tempList = new List<string>();
+
+            return tempList;
+        }
         public string ReturnUrl = null;
         public string QuestionNumber = "0";
         public string CaseId = "0";

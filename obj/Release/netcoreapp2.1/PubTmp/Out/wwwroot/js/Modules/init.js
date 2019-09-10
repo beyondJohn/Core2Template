@@ -184,6 +184,6 @@ var makeModules = function (data) { // data:JSON dependency injecti
 
 
 function initModules() {
-    httpRequest("Get","http://oncologyconsults.com/api/HemaModule","application/json", "", makeModules);
+    httpRequest("Get","https://oncologyconsults.com/api/HemaModule","application/json", "", makeModules);
 }
 (function(){initModules();})();

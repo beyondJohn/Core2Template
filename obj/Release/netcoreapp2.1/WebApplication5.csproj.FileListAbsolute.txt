@@ -77,3 +77,4 @@ C:\Users\Alienware\source\repos\Core2Template\obj\Release\netcoreapp2.1\Razor\Vi
 C:\Users\Alienware\source\repos\Core2Template\obj\Release\netcoreapp2.1\Razor\Views\CME\Evaluation.g.cshtml.cs
 C:\Users\Alienware\source\repos\Core2Template\obj\Release\netcoreapp2.1\Razor\Views\User\Account.g.cshtml.cs
 C:\Users\Alienware\source\repos\Core2Template\obj\Release\netcoreapp2.1\Razor\Views\CME\Certificate.g.cshtml.cs
+C:\Users\Alienware\source\repos\Core2Template\obj\Release\netcoreapp2.1\Razor\Views\Home\Modules1.g.cshtml.cs

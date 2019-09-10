@@ -74,7 +74,7 @@ using WebApplication5.Models;
             WriteLiteral("\r\n<h2>PostTest</h2>\r\n\r\n\r\n<div style=\"padding:15px;\">\r\n    ");
             EndContext();
             BeginContext(124, 2161, false);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("form", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "119bd7e7591d4c3e931d76dbfa654ebc", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("form", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "bb6e624e696a4cdb9aff1d1cd4d39436", async() => {
                 BeginContext(213, 2, true);
                 WriteLiteral("\r\n");
                 EndContext();
@@ -175,7 +175,7 @@ using WebApplication5.Models;
             ");
                 EndContext();
                 BeginContext(2201, 55, false);
-                __tagHelperExecutionContext = __tagHelperScopeManager.Begin("img", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.SelfClosing, "aed6451603fc4603945cfc271ff42e48", async() => {
+                __tagHelperExecutionContext = __tagHelperScopeManager.Begin("img", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.SelfClosing, "2d072a11ec0b4e38bd10236c26e85f51", async() => {
                 }
                 );
                 __Microsoft_AspNetCore_Mvc_Razor_TagHelpers_UrlResolutionTagHelper = CreateTagHelper<global::Microsoft.AspNetCore.Mvc.Razor.TagHelpers.UrlResolutionTagHelper>();

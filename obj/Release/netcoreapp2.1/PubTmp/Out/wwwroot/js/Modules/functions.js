@@ -64,7 +64,7 @@ function saveNewModule() {
 
     // create JSON object containing the temp modulesList array, then Post the HTTP request using JSON object as body
     var jsonModulesList = JSON.parse("{\"modulesList\":" + JSON.stringify(modulesList) + "}");
-    httpRequest("Post", "http://oncologyconsults.com/api/HemaModule", "application/json", jsonModulesList, refreshAfterSave);
+    httpRequest("Post", "https://oncologyconsults.com/api/HemaModule", "application/json", jsonModulesList, refreshAfterSave);
 }
 
 // Used to save edited module
@@ -148,7 +148,7 @@ function saveEditModule() {
                 });
             }
             // Post HTTP request using tempModulesBaseDB as body
-            httpRequest("Post", "http://oncologyconsults.com/api/HemaModule", "application/json", tempModulesBaseDB, refreshAfterSave);
+            httpRequest("Post", "https://oncologyconsults.com/api/HemaModule", "application/json", tempModulesBaseDB, refreshAfterSave);
         }
         // perorm simple edit, update contents of edited module, no reordering required
         else {
@@ -168,7 +168,7 @@ function saveEditModule() {
                     var selectActive;
                     document.querySelector('input[name = "active"]:checked').value === "active" ? selectActive = "1" : selectActive = "0";
                     module.active = selectActive;
-                    httpRequest("Post", "http://oncologyconsults.com/api/HemaModule", "application/json", tempModulesBaseDB, refreshAfterSave);
+                    httpRequest("Post", "https://oncologyconsults.com/api/HemaModule", "application/json", tempModulesBaseDB, refreshAfterSave);
                 }
             });
         }

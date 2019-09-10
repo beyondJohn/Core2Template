@@ -38,6 +38,10 @@ namespace WebApplication5.Controllers
         {
             return View();
         }
+        public ActionResult Modules1()
+        {
+            return View();
+        }
         public ActionResult CEData(string id)
         {
             int myId = 422;

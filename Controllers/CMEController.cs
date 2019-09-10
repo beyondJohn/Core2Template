@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApplication5.Models;
 using static WebApplication5.Models.ModelDbContext;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace WebApplication5.Controllers
 {
@@ -148,7 +149,11 @@ namespace WebApplication5.Controllers
             var check = User.Identity.IsAuthenticated;
             if (!check)
             {
-                return RedirectToAction("Account", "Identity", new { id = "Login" });
+                if(!Request.Query.Where(x => x.Key == "src" && x.Value == "mycme").Any())
+                {
+                    return RedirectToAction("Account", "Identity", new { id = "Login" });
+                }
+                
             }
             TestModel myTestModel = new TestModel();
             myTestModel.CaseId = id;
@@ -549,10 +554,29 @@ namespace WebApplication5.Controllers
             bool checkIfClaimed = myTestModel.IsCreditClaimed(caseID, userId);
             if (checkIfClaimed == true)
             {
-                //return RedirectToAction("ActivityComplete", "CME", new { id = caseID });
+                return RedirectToAction("ActivityComplete", "CME", new { id = caseID });
             }
             myTestModel.claimedCredit = null;
             myTestModel.ReturnUrl = "~/CME/ClaimCredit";
+            var listItems = new List<SelectListItem>();
+            if (id == "800")
+            {
+                listItems.Add(new SelectListItem("Doctor", "1"));
+                listItems.Add(new SelectListItem("Nurse", "2"));
+                
+            }
+            else if (id == "801")
+            {
+                listItems.Add(new SelectListItem("Doctor", "1"));
+
+            }
+            else
+            {
+                listItems.Add(new SelectListItem("Doctor", "1"));
+                listItems.Add(new SelectListItem("Nurse", "2"));
+
+            }
+            ViewBag.listItems = listItems;
             return View(myTestModel);
         }
         [HttpPost]

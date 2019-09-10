@@ -35,7 +35,7 @@
                 </ul>
 
 
-                <ul class="nav navbar-nav navbar-right" >
+                <ul class="nav navbar-nav navbar-right">
                     <partial name="_LoginPartial" />
                 </ul>
 
@@ -83,7 +83,17 @@
         </div>
     </div>
     @RenderSection("Scripts", required: false)
-
+    <script>
+        (function () {
+            var currentUrl = document.referrer;
+            var myURL = window.location.href;
+            console.log("currentUrl: " + myURL);
+            if (myURL.indexOf("mycme") != -1) {
+                document.getElementsByClassName("navbar")[0].style = "display:none;";
+                document.getElementsByClassName("FtrBg")[0].style = "display:none;";
+            }
+        })();
+    </script>
 
 </body>
 </html>

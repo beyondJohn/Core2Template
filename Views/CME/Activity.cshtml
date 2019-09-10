@@ -40,15 +40,15 @@
                     .FirstOrDefault()
                     .ToString();
                 var answerCount = Model.Answers.Count;
-        @Html.Raw(openingText);
-        <br />
+                @Html.Raw(openingText);
+                <br />
                 questionText = Model.getActivityQuestions(CaseID).Select(m => m.question_text).Skip(i).FirstOrDefault().ToString();
-        @Html.Raw(questionText);
-        <br />
+                @Html.Raw(questionText);
+                <br />
                 foreach (var answer in Model.Answers)
                 {
-        @Html.RadioButtonFor(m => m.SelectedAnswer, answer.Answer_Id, new { onchange = "selected(this);" })  @answer.Answer_Text
-        <br />
+                    @Html.RadioButtonFor(m => m.SelectedAnswer, answer.Answer_Id, new { onchange = "selected(this);" }) @answer.Answer_Text
+                    <br />
                     string breakMe = "";
                 }
             }
@@ -59,8 +59,11 @@
             {
                 if (questionText == "<font color=\"white\">.</font>")
                 {
+                    if (!ViewContext.HttpContext.Request.Query.Where(x => x.Key == "src" && x.Value == "mycme").Any())
+                    {
+                        @Html.Raw("<a href='/CME/PostTest/" + CaseID + "'><img src='../../../Images/proceed.jpg' style='width:200px; border:none;' /></a>")
+                    }
 
-            @Html.Raw("<a href='/CME/PostTest/" + CaseID + "'><img src='http://www.nutritionconsultsce.com/Images/proceed.jpg' style='width:200px; border:none;' /></a>")
                 }
 
             }
@@ -76,12 +79,24 @@
     </div>
 </form>
 <script>
+    function getParameterByName(name, url) {
+        if (!url) url = window.location.href;
+        name = name.replace(/[\[\]]/g, '\\$&');
+        var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, ' '));
+    }
     var questionCount = @Model.getActivityQuestions(ViewContext.RouteData.Values["id"].ToString()).Count();
     var arrowDiv = document.getElementById("divArrow");
     console.log("questionCount: ", questionCount);
     var responseJson = [];
     function selected(btn) {
         if (responseJson.length > 0) {
+            var url = window.location.href;
+            var src = getParameterByName("src", url);
+            console.log("src: " + src);
             for (var i = 0; i < responseJson.length; i++) {
                 var responseObj = JSON.parse(JSON.stringify(responseJson[i]));
                 if (Object.keys(responseObj)[0] === btn.value) {
@@ -95,12 +110,24 @@
                     }
                     if (responseObj[btn.value]["correct"] === "1") {
                         if (@ViewContext.RouteData.Values["q"].ToString() < questionCount - 1) {
-                            arrowDiv.innerHTML =
-                            '<a href="/CME/Activity/@ViewContext.RouteData.Values["id"].ToString()/@(int.Parse(ViewContext.RouteData.Values["q"].ToString())+1)"><img src="http://www.nutritionconsultsce.com/Images/proceed.jpg" style="width:200px; border:none;" /></a>';
+                            if (src != 'mycme') {
+                                arrowDiv.innerHTML =
+                            '<a href="/CME/Activity/@ViewContext.RouteData.Values["id"].ToString()/@(int.Parse(ViewContext.RouteData.Values["q"].ToString())+1)"><img src="../../../Images/proceed.jpg" style="width:200px; border:none;" /></a>';
+                            }
+                            else {
+                                arrowDiv.innerHTML =
+                            '<a href="/CME/Activity/@ViewContext.RouteData.Values["id"].ToString()/@(int.Parse(ViewContext.RouteData.Values["q"].ToString())+1)?src=mycme"><img src="../../../Images/proceed.jpg" style="width:200px; border:none;" /></a>';
+                            }
                         }
                         else {
-                            arrowDiv.innerHTML =
-                                '<a href="/CME/PostTest/@ViewContext.RouteData.Values["id"].ToString()"><img src="http://www.nutritionconsultsce.com/Images/proceed.jpg" style="width:200px; border:none;" /></a>';
+                            if (src == 'mycme') {
+                                arrowDiv.innerHTML = "";
+                            }
+                            else {
+                                arrowDiv.innerHTML =
+                                '<a href="/CME/PostTest/@ViewContext.RouteData.Values["id"].ToString()"><img src="../../../Images/proceed.jpg" style="width:200px; border:none;" /></a>';
+                            }
+                            
                         }
                     }
                     else {
@@ -113,6 +140,12 @@
 
     }
     function loadDoc() {
+        var url = window.location.href;
+        var src = getParameterByName("src", url);
+        console.log("src: " + src);
+        if (src == 'mycme') {
+            arrowDiv.innerHTML = "";
+        }
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
